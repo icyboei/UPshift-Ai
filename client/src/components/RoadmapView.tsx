@@ -1,375 +1,694 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import {
-  Compass,
-  CheckCircle2,
-  Lock,
-  Clock,
-  ArrowRight,
-  BookOpen,
-  Sparkles,
-  AlertCircle,
-  ExternalLink,
-  ChevronRight,
-  Calendar,
-  Layers,
-  Check,
-} from 'lucide-react';
-import { RoadmapMilestone, RoadmapTask } from '../types';
+import { RoadmapTask } from '../types';
 
 export const RoadmapView: React.FC = () => {
-  const { roadmap, activeTaskId, setActiveTaskId, setCurrentView } = useApp();
-  const [selectedTask, setSelectedTask] = useState<RoadmapTask | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'completed'>('all');
+  const {
+    roadmap,
+    goalContext,
+    activeTaskId,
+    setActiveTaskId,
+    setCurrentView,
+    loadSeedDemo,
+  } = useApp();
 
+  const [terminalLogs, setTerminalLogs] = useState<string[]>([
+    '[14:22:01.109] Gemma 4 feedback stream initialized. Prerequisite graph loaded (142 checks passed).',
+    '[14:22:04.882] Vector embedding memory consumption verified. Baseline precision within target SLA.',
+  ]);
+  const [pulseActive, setPulseActive] = useState(false);
+
+  // If no roadmap exists yet, provide a quick launcher
   if (!roadmap) {
     return (
-      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
-        <p className="text-charcoal-600">No active roadmap available yet.</p>
-        <button
-          onClick={() => setCurrentView('onboarding')}
-          className="px-4 py-2 bg-emeraldAccent-600 text-white rounded-lg text-sm font-semibold"
-        >
-          Create Your Roadmap
-        </button>
+      <div className="flex flex-col items-center justify-center p-space-xl bg-surface-container-lowest border-[3px] border-[#000000] shadow-[8px_8px_0px_#000000] my-space-lg text-center gap-space-md">
+        <div className="w-16 h-16 bg-primary-container border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] flex items-center justify-center">
+          <span className="material-symbols-outlined text-[32px] text-on-surface">alt_route</span>
+        </div>
+        <h2 className="font-headline-md text-headline-md uppercase text-on-surface">
+          NO ROADMAP IN MEMORY
+        </h2>
+        <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
+          Start a new adaptive goal assessment or load the pre-calibrated demo profile to see your prerequisite sequence.
+        </p>
+        <div className="flex items-center gap-space-sm flex-wrap justify-center">
+          <button
+            onClick={() => setCurrentView('landing')}
+            className="px-space-lg py-space-sm bg-primary-container text-on-primary-container font-title text-title uppercase tracking-wide border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
+          >
+            START ASSESSMENT
+          </button>
+          <button
+            onClick={loadSeedDemo}
+            className="px-space-lg py-space-sm bg-surface-container-high text-on-surface font-title text-title uppercase tracking-wide border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
+          >
+            LOAD DEMO PROFILE
+          </button>
+        </div>
       </div>
     );
   }
 
+  const allTasks = roadmap.milestones.flatMap((m) => m.tasks);
+  const completedTasks = allTasks.filter((t) => t.status === 'completed');
+  const activeTask = allTasks.find((t) => t.id === activeTaskId) || allTasks.find((t) => t.status === 'available') || allTasks[0];
+  const progressPercent = Math.round((completedTasks.length / Math.max(allTasks.length, 1)) * 100);
+
   const handleLaunchTask = (task: RoadmapTask) => {
     setActiveTaskId(task.id);
-    setSelectedTask(null);
     setCurrentView('task_workspace');
   };
 
-  const totalTasks = roadmap.milestones.flatMap((m) => m.tasks).length;
-  const completedTasks = roadmap.milestones
-    .flatMap((m) => m.tasks)
-    .filter((t) => t.status === 'completed').length;
-  const progressPercent = Math.round((completedTasks / Math.max(totalTasks, 1)) * 100);
+  const handleSimulateCheck = () => {
+    const now = new Date();
+    const timestamp = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+    const newEntry = `[${timestamp}] EVIDENCE CHECK: Gemma 4 verified prerequisite graph (${activeTask?.title || 'Active Milestone'})`;
+    setTerminalLogs((prev) => [...prev.slice(-4), newEntry]);
+    setPulseActive(true);
+    setTimeout(() => setPulseActive(false), 800);
+    handleLaunchTask(activeTask);
+  };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 sm:py-12 px-4 space-y-8 animate-fadeIn">
-      {/* Roadmap Header Summary */}
-      <div className="bg-white border border-surface-200 rounded-3xl p-6 sm:p-8 shadow-subtle space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-emeraldAccent-100 text-emeraldAccent-800 font-semibold">
-                Prerequisite-Aware Sequence
-              </span>
-              <span className="text-xs font-mono text-charcoal-400">
-                Total Budget: ~{roadmap.totalEstimatedHours}h over {roadmap.targetTimeframeWeeks}w
-              </span>
-            </div>
-            <h1 className="editorial-title text-2xl sm:text-3xl font-normal text-charcoal-900">
-              {roadmap.title}
-            </h1>
+    <div className="flex flex-col w-full pb-space-xl animate-fadeIn">
+      {/* System Status Strip & Technical Sub-Header */}
+      <div className="w-full bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md mb-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+        <div className="flex flex-col gap-space-xs">
+          <div className="flex items-center gap-space-sm flex-wrap">
+            <span className="px-space-sm py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">
+              TRACK: {(goalContext?.targetSkill || goalContext?.clarifiedGoal || 'DISTRIBUTED AI SYSTEMS').toUpperCase()}
+            </span>
+            <span className="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">
+              MODEL: GEMMA 4
+            </span>
+            <span className="px-space-sm py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono uppercase border-[2px] border-[#000000]">
+              ADAPTIVE ENGINE: ACTIVE
+            </span>
           </div>
-
-          {/* Overall Completion Progress */}
-          <div className="sm:text-right flex-shrink-0">
-            <div className="text-2xl font-bold font-display text-charcoal-900">
-              {progressPercent}%
-            </div>
-            <div className="text-xs text-charcoal-500 font-mono">
-              {completedTasks} of {totalTasks} Tasks Completed
-            </div>
-          </div>
+          <h1 className="font-headline-lg text-headline-lg text-on-surface uppercase tracking-tight m-0">
+            YOUR NEXT STEP STARTS HERE // ADAPTIVE ROADMAP
+          </h1>
+          <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl m-0">
+            Assess your current level, identify skill gaps and prerequisites, take the next best action, and maintain long-term improvement.
+          </p>
         </div>
 
-        {/* Progress Bar */}
-        <div className="w-full bg-surface-200 h-2 rounded-full overflow-hidden">
-          <div
-            className="bg-emeraldAccent-600 h-full transition-all duration-500"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-
-        {/* Adaptation banner if adapted */}
-        {roadmap.adaptationReason && (
-          <div className="p-3 rounded-xl bg-surface-50 border border-emeraldAccent-200 text-xs text-charcoal-700 flex items-start space-x-2">
-            <Sparkles className="w-4 h-4 text-emeraldAccent-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-semibold text-charcoal-900">Latest Adaptation: </span>
-              {roadmap.adaptationReason}
-            </div>
+        <div className="flex flex-wrap md:flex-col lg:flex-row items-stretch gap-space-sm self-start md:self-auto shrink-0">
+          <div className="px-space-md py-space-xs bg-tertiary-fixed text-on-tertiary-fixed border-[2px] border-[#000000] flex flex-col justify-center">
+            <span className="font-label-mono text-label-mono uppercase">RETENTION</span>
+            <span className="font-headline-sm text-headline-sm uppercase font-bold text-tertiary">
+              94.2%
+            </span>
           </div>
-        )}
-
-        {/* Filter Tabs */}
-        <div className="flex items-center space-x-2 pt-2 border-t border-surface-100">
-          <span className="text-xs font-mono text-charcoal-400 mr-2">FILTER:</span>
-          {[
-            { key: 'all', label: `All Tasks (${totalTasks})` },
-            { key: 'available', label: 'Actionable Now' },
-            { key: 'completed', label: `Completed (${completedTasks})` },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setStatusFilter(tab.key as any)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
-                statusFilter === tab.key
-                  ? 'bg-charcoal-900 text-surface-50 border-charcoal-900'
-                  : 'bg-surface-50 border-surface-200 text-charcoal-600 hover:bg-surface-100'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <div className="px-space-md py-space-xs bg-surface-container-low border-[2px] border-[#000000] flex flex-col justify-center">
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase font-bold">
+              ACTIONS DONE
+            </span>
+            <span className="font-headline-sm text-headline-sm uppercase text-on-surface font-bold">
+              {completedTasks.length} / {allTasks.length}
+            </span>
+          </div>
+          <div className="px-space-md py-space-xs bg-primary-fixed text-on-primary-fixed border-[2px] border-[#000000] flex flex-col justify-center">
+            <span className="font-label-mono text-label-mono uppercase">HEARTBEAT</span>
+            <span className="font-headline-sm text-headline-sm uppercase text-primary font-bold">
+              0.84S
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Milestones & Tasks Timeline */}
-      <div className="space-y-8">
-        {roadmap.milestones.map((milestone, mIdx) => {
-          const filteredTasks = milestone.tasks.filter((t) => {
-            if (statusFilter === 'available') return t.status === 'available' || t.status === 'in_progress';
-            if (statusFilter === 'completed') return t.status === 'completed';
-            return true;
-          });
+      {/* Bento Core Grid */}
+      <div className="grid grid-cols-12 gap-space-lg mb-space-lg">
+        {/* Box 1: Quick Deploy / Next Best Action (Span 7) */}
+        <div className="col-span-12 lg:col-span-7 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between relative overflow-hidden">
+          <div
+            className="absolute -right-12 -top-12 w-48 h-48 opacity-15 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(#000000 2px, transparent 2px)',
+              backgroundSize: '10px 10px',
+            }}
+          />
 
-          if (filteredTasks.length === 0 && statusFilter !== 'all') return null;
+          <div className="flex flex-col gap-space-sm mb-space-lg z-10">
+            <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm">
+              <div className="flex items-center gap-space-xs">
+                <span className="w-3 h-3 bg-primary border-[1.5px] border-[#000000]"></span>
+                <span className="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider font-bold">
+                  YOUR NEXT BEST ACTION // GEMMA 4 DISPATCH
+                </span>
+              </div>
+              <span className="font-label-mono text-label-mono bg-surface-container-highest px-space-xs py-0.5 border-[1px] border-[#000000] uppercase text-on-surface font-bold">
+                TASK: #{activeTask?.id?.toUpperCase() || '9042-B'}
+              </span>
+            </div>
 
-          const isMilestoneLocked = milestone.status === 'locked';
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md pt-space-xs">
+              <div>
+                <h2 className="font-headline-md text-headline-md text-on-surface uppercase m-0 leading-tight">
+                  {activeTask?.title || 'OPTIMIZE EMBEDDING RETRIEVAL LATENCY'}
+                </h2>
+                <p className="font-body-md text-body-md text-on-surface-variant m-0 mt-1">
+                  {activeTask?.objective || 'Complete a hands-on benchmark comparing HNSW index vs IVFFlat on 1M vectors. Submit benchmark code as evidence.'}
+                </p>
+              </div>
 
-          return (
-            <div
-              key={milestone.id}
-              className={`rounded-3xl border transition-all ${
-                isMilestoneLocked
-                  ? 'bg-surface-100/60 border-surface-200 opacity-75'
-                  : 'bg-white border-surface-200 shadow-subtle'
-              }`}
-            >
-              {/* Milestone Header */}
-              <div className="p-6 border-b border-surface-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-mono font-bold text-emeraldAccent-700 uppercase tracking-wider">
-                      Milestone {milestone.order}
-                    </span>
-                    <span className="text-charcoal-400">•</span>
-                    <span className="text-xs text-charcoal-500 font-mono">
-                      ~{milestone.estimatedHours} Hours
-                    </span>
-                    {isMilestoneLocked && (
-                      <span className="inline-flex items-center space-x-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-200 text-charcoal-600">
-                        <Lock className="w-3 h-3" />
-                        <span>Prerequisites Required</span>
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold font-display text-charcoal-900">
-                    {milestone.title}
-                  </h3>
-                  <p className="text-xs text-charcoal-600 max-w-2xl leading-relaxed">
-                    {milestone.description}
-                  </p>
+              <button
+                onClick={handleSimulateCheck}
+                className="px-space-lg py-space-sm bg-primary-container text-on-primary-container font-title text-title uppercase tracking-wider border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center gap-space-sm shrink-0"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  assignment_turned_in
+                </span>
+                SUBMIT EVIDENCE // CHECK
+              </button>
+            </div>
+          </div>
+
+          {/* Telemetry Subgrid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-sm pt-space-sm border-t-[2px] border-[#000000] z-10">
+            <div className="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+              <span className="font-label-mono text-label-mono text-on-surface-variant uppercase block font-bold">
+                EST TIME
+              </span>
+              <span className="font-title text-title text-on-surface font-black">
+                {activeTask?.estimatedMinutes || 45} MIN
+              </span>
+              <span className="font-label-mono text-label-mono text-tertiary block font-bold">
+                ▲ HIGH PRIORITY
+              </span>
+            </div>
+
+            <div className="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+              <span className="font-label-mono text-label-mono text-on-surface-variant uppercase block font-bold">
+                RETENTION BUFFER
+              </span>
+              <span className="font-title text-title text-on-surface font-black">
+                2.18 GB / 8 GB
+              </span>
+              <span className="font-label-mono text-label-mono text-on-surface-variant block">
+                HEADROOM: 72%
+              </span>
+            </div>
+
+            <div className="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+              <span className="font-label-mono text-label-mono text-on-surface-variant uppercase block font-bold">
+                GEMMA 4 CONFIDENCE
+              </span>
+              <span className="font-title text-title text-on-surface font-black">
+                98.4%
+              </span>
+              <span className="font-label-mono text-label-mono text-primary block font-bold">
+                CALIBRATED
+              </span>
+            </div>
+          </div>
+
+          {/* Live Terminal Simulation Output */}
+          <div className="mt-space-md p-space-sm bg-inverse-surface text-inverse-on-surface border-[2px] border-[#000000] font-label-code text-label-code z-10">
+            <div className="flex items-center justify-between text-surface-variant border-b border-surface-variant/30 pb-space-xs mb-space-xs font-label-mono">
+              <span>STREAM: gemma4/adaptive-feedback</span>
+              <span
+                className={`inline-block w-2.5 h-2.5 rounded-full transition-colors ${
+                  pulseActive ? 'bg-primary-container' : 'bg-tertiary-fixed'
+                }`}
+              />
+            </div>
+            <div className="flex flex-col gap-1 text-surface-container-highest">
+              {terminalLogs.map((log, idx) => (
+                <div key={idx} className="leading-snug">
+                  {log}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Box 2: Total Mastery & Stepped Graph (Span 5) */}
+        <div className="col-span-12 lg:col-span-5 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+              <div className="flex items-center gap-space-xs">
+                <span className="material-symbols-outlined text-[18px] text-tertiary">
+                  trending_up
+                </span>
+                <span className="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider font-bold">
+                  EVIDENCE OF YOUR GROWTH
+                </span>
+              </div>
+              <button
+                onClick={() => setCurrentView('analytics')}
+                className="font-label-mono text-label-mono text-primary font-bold hover:underline uppercase flex items-center gap-1"
+              >
+                FULL MATRIX
+                <span className="material-symbols-outlined text-[14px]">arrow_outward</span>
+              </button>
+            </div>
+
+            <div className="flex items-baseline justify-between mb-space-sm">
+              <span className="font-headline-sm text-headline-sm uppercase text-on-surface font-bold">
+                TOTAL MASTERY
+              </span>
+              <span className="font-headline-sm text-headline-sm uppercase text-tertiary font-bold">
+                {progressPercent > 0 ? `${progressPercent}% STABLE` : '48.2% STABLE'}
+              </span>
+            </div>
+
+            {/* Brutalist Stepped SVG Load Chart */}
+            <div className="w-full bg-surface-container-low border-[2px] border-[#000000] p-space-sm mb-space-md">
+              <div className="flex justify-between items-center text-on-surface-variant font-label-mono text-label-mono mb-2">
+                <span>PROGRESS VELOCITY (PREV 12 HR)</span>
+                <span>MAX PEAK: 68.4%</span>
+              </div>
+              <svg className="w-full h-16 text-primary overflow-visible" preserveAspectRatio="none" viewBox="0 0 300 70">
+                <line opacity="0.3" stroke="#000000" strokeDasharray="2 2" strokeWidth="1" x1="0" x2="300" y1="18" y2="18" />
+                <line opacity="0.3" stroke="#000000" strokeDasharray="2 2" strokeWidth="1" x1="0" x2="300" y1="42" y2="42" />
+                <polyline
+                  fill="none"
+                  points="0,52 30,52 30,44 60,44 60,35 90,35 90,48 120,48 120,28 150,28 150,38 180,38 180,24 210,24 210,40 240,40 240,32 270,32 270,42 300,42"
+                  stroke="#000000"
+                  strokeWidth="3"
+                />
+                <polygon
+                  fill="#60a5fa"
+                  fillOpacity="0.35"
+                  points="0,52 30,52 30,44 60,44 60,35 90,35 90,48 120,48 120,28 150,28 150,38 180,38 180,24 210,24 210,40 240,40 240,32 270,32 270,42 300,42 300,70 0,70"
+                />
+              </svg>
+            </div>
+
+            {/* Health Vectors */}
+            <div className="flex flex-col gap-space-xs">
+              <div className="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+                <span className="font-label-mono text-label-mono uppercase text-on-surface font-bold">
+                  PREREQUISITE COVERAGE
+                </span>
+                <div className="flex items-center gap-space-sm">
+                  <span className="font-label-mono text-label-mono text-on-surface">18.4 / 32 UNITS</span>
+                  <span className="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">
+                    OPTIMAL
+                  </span>
                 </div>
               </div>
 
-              {/* Tasks List */}
-              <div className="p-4 sm:p-6 divide-y divide-surface-100 space-y-3">
-                {filteredTasks.map((task) => {
-                  const isTaskCompleted = task.status === 'completed';
-                  const isTaskLocked = task.status === 'locked';
-                  const isCurrentActive = activeTaskId === task.id;
+              <div className="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+                <span className="font-label-mono text-label-mono uppercase text-on-surface font-bold">
+                  VERIFIED SKILLS
+                </span>
+                <div className="flex items-center gap-space-sm">
+                  <span className="font-label-mono text-label-mono text-on-surface">
+                    {completedTasks.length * 4 + 72} / 88 SKILLS
+                  </span>
+                  <span className="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">
+                    HEALTHY
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+                <span className="font-label-mono text-label-mono uppercase text-on-surface font-bold">
+                  RETENTION DRILLS
+                </span>
+                <div className="flex items-center gap-space-sm">
+                  <span className="font-label-mono text-label-mono text-on-surface">0.0001% DECAY</span>
+                  <span className="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">
+                    NOMINAL
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase font-bold">
+              ADAPTIVE DIAGNOSTICS: ACTIVE
+            </span>
+            <button
+              onClick={() => setCurrentView('assessment')}
+              className="px-space-sm py-1 bg-surface-container-high hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]"
+            >
+              RUN RE-ASSESSMENT
+            </button>
+          </div>
+        </div>
+
+        {/* Box 3: Prerequisites & Topology (Span 6) */}
+        <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+              <div className="flex items-center gap-space-xs">
+                <span className="material-symbols-outlined text-[18px]">account_tree</span>
+                <span className="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider font-bold">
+                  CURRICULUM PREREQUISITES & TOPOLOGY
+                </span>
+              </div>
+              <span className="font-label-mono text-label-mono px-space-xs bg-surface-container-high border-[1px] border-[#000000] uppercase font-bold">
+                {roadmap.milestones.length} MILESTONES LOADED
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-space-sm">
+              {roadmap.milestones.slice(0, 4).map((milestone, idx) => {
+                const isCurrent = idx === 0;
+                return (
+                  <div
+                    key={milestone.id}
+                    className="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex items-center justify-between hover:bg-surface-container transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (milestone.tasks[0]) handleLaunchTask(milestone.tasks[0]);
+                    }}
+                  >
+                    <div className="flex items-center gap-space-sm">
+                      <div className="w-8 h-8 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">
+                        0{idx + 1}
+                      </div>
+                      <div>
+                        <div className="font-title text-title uppercase text-on-surface">
+                          {milestone.title}
+                        </div>
+                        <div className="font-label-mono text-label-mono text-on-surface-variant uppercase">
+                          {milestone.tasks.length} TASKS // EST {milestone.estimatedHours} HOURS
+                        </div>
+                      </div>
+                    </div>
+                    <span
+                      className={`px-space-sm py-1 font-label-mono text-label-mono font-bold uppercase border-[1.5px] border-[#000000] ${
+                        isCurrent
+                          ? 'bg-primary-container text-on-primary-container'
+                          : 'bg-tertiary-fixed text-on-tertiary-fixed'
+                      }`}
+                    >
+                      {isCurrent ? 'RECOMMENDED NEXT' : 'PREREQ VERIFIED'}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase">
+              CURRICULUM SYNCHRONIZED
+            </span>
+            <button
+              onClick={() => setCurrentView('analytics')}
+              className="px-space-sm py-1 bg-surface-container-lowest hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]"
+            >
+              INSPECT RADAR GRAPH
+            </button>
+          </div>
+        </div>
+
+        {/* Box 4: Gemma 4 Adaptive Log (Span 6) */}
+        <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+              <div className="flex items-center gap-space-xs">
+                <span className="material-symbols-outlined text-[18px]">terminal</span>
+                <span className="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider font-bold">
+                  GEMMA 4 ADAPTIVE LOG // TELEMETRY FEED
+                </span>
+              </div>
+              <span className="font-label-mono text-label-mono px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-bold border-[1px] border-[#000000] uppercase">
+                LISTENING
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-space-xs">
+              <div className="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+                <div className="flex items-start gap-space-sm">
+                  <span className="px-space-xs py-0.5 bg-secondary-container text-on-secondary-container font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">
+                    ADAPT
+                  </span>
+                  <div>
+                    <div className="font-title text-title uppercase text-on-surface">
+                      ADAPTATION // LEVEL ADJUSTMENT
+                    </div>
+                    <div className="font-body-sm text-body-sm text-on-surface-variant">
+                      Task difficulty adjusted +15% after quick evidence completion.
+                    </div>
+                  </div>
+                </div>
+                <span className="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">
+                  14:18:22
+                </span>
+              </div>
+
+              <div className="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+                <div className="flex items-start gap-space-sm">
+                  <span className="px-space-xs py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">
+                    PREREQ
+                  </span>
+                  <div>
+                    <div className="font-title text-title uppercase text-on-surface">
+                      PREREQUISITE CLEARED // MESH
+                    </div>
+                    <div className="font-body-sm text-body-sm text-on-surface-variant">
+                      Vector embeddings baseline verified.
+                    </div>
+                  </div>
+                </div>
+                <span className="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">
+                  14:02:11
+                </span>
+              </div>
+
+              <div className="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+                <div className="flex items-start gap-space-sm">
+                  <span className="px-space-xs py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">
+                    SPACE
+                  </span>
+                  <div>
+                    <div className="font-title text-title uppercase text-on-surface">
+                      SPACED REPETITION // QUEUED
+                    </div>
+                    <div className="font-body-sm text-body-sm text-on-surface-variant">
+                      3 maintenance flash-quizzes queued for retention.
+                    </div>
+                  </div>
+                </div>
+                <span className="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">
+                  13:45:00
+                </span>
+              </div>
+
+              <div className="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+                <div className="flex items-start gap-space-sm">
+                  <span className="px-space-xs py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">
+                    EVID
+                  </span>
+                  <div>
+                    <div className="font-title text-title uppercase text-on-surface">
+                      EVIDENCE LOGGED // REPO PUSH
+                    </div>
+                    <div className="font-body-sm text-body-sm text-on-surface-variant">
+                      GitHub PR merged for distributed rate limiter.
+                    </div>
+                  </div>
+                </div>
+                <span className="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">
+                  12:30:19
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase font-bold">
+              FILTER: ALL SEVERITIES
+            </span>
+            <button
+              onClick={() => setCurrentView('analytics')}
+              className="px-space-sm py-1 bg-surface-container-high hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]"
+            >
+              VIEW FULL LOG
+            </button>
+          </div>
+        </div>
+
+        {/* Box 5: Platform Navigation Shortcuts (Span 12) */}
+        <div className="col-span-12 bg-surface-container-high border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md">
+          <div className="flex items-center justify-between mb-space-sm">
+            <span className="font-label-mono text-label-mono text-on-surface uppercase tracking-wider font-bold">
+              DIRECTORY DISPATCH // CORE INTERFACES
+            </span>
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase">
+              SELECT MODULE TO LAUNCH
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+            <div
+              onClick={() => setCurrentView('analytics')}
+              className="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between cursor-pointer"
+            >
+              <div className="flex items-start justify-between mb-space-sm">
+                <span className="w-8 h-8 bg-primary-container text-on-primary-container border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">
+                  01
+                </span>
+                <span className="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                  query_stats
+                </span>
+              </div>
+              <div>
+                <h3 className="font-title text-title uppercase text-on-surface m-0 mb-1">
+                  SKILL GAPS & EVIDENCE
+                </h3>
+                <p className="font-body-sm text-body-sm text-on-surface-variant m-0">
+                  Inspect throughput heatmaps, radar chart dimensions, and effort allocation.
+                </p>
+              </div>
+              <div className="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-primary font-label-mono text-label-mono uppercase font-bold">
+                <span>ROUTE: /analytics</span>
+                <span>ENTER →</span>
+              </div>
+            </div>
+
+            <div
+              onClick={() => setCurrentView('task_workspace')}
+              className="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between cursor-pointer"
+            >
+              <div className="flex items-start justify-between mb-space-sm">
+                <span className="w-8 h-8 bg-tertiary-fixed text-on-tertiary-fixed border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">
+                  02
+                </span>
+                <span className="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                  terminal
+                </span>
+              </div>
+              <div>
+                <h3 className="font-title text-title uppercase text-on-surface m-0 mb-1">
+                  DAILY ACTION WORKSPACE
+                </h3>
+                <p className="font-body-sm text-body-sm text-on-surface-variant m-0">
+                  Take the immediate next empirical step with focus timer and code review.
+                </p>
+              </div>
+              <div className="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-tertiary font-label-mono text-label-mono uppercase font-bold">
+                <span>ROUTE: /task_workspace</span>
+                <span>ENTER →</span>
+              </div>
+            </div>
+
+            <div
+              onClick={() => setCurrentView('system_details')}
+              className="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between cursor-pointer"
+            >
+              <div className="flex items-start justify-between mb-space-sm">
+                <span className="w-8 h-8 bg-secondary-fixed text-on-secondary-fixed-variant border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">
+                  03
+                </span>
+                <span className="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                  contact_support
+                </span>
+              </div>
+              <div>
+                <h3 className="font-title text-title uppercase text-on-surface m-0 mb-1">
+                  SPECS & MENTOR DIRECTORY
+                </h3>
+                <p className="font-body-sm text-body-sm text-on-surface-variant m-0">
+                  Connect with staff engineers and mentors to review complex architectural trade-offs.
+                </p>
+              </div>
+              <div className="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-secondary font-label-mono text-label-mono uppercase font-bold">
+                <span>ROUTE: /specs</span>
+                <span>ENTER →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Milestone Task Matrix */}
+      <div className="w-full bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg">
+        <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+          <div className="flex items-center gap-space-sm">
+            <span className="material-symbols-outlined text-primary text-[22px]">format_list_bulleted</span>
+            <h2 className="font-headline-sm text-headline-sm uppercase text-on-surface font-bold m-0">
+              COMPLETE SEQUENCE EXECUTION PLAN ({roadmap.milestones.length} PHASES)
+            </h2>
+          </div>
+          <span className="font-label-mono text-label-mono uppercase px-space-sm py-0.5 bg-surface-container-high border border-[#000000] font-bold">
+            {completedTasks.length} OF {allTasks.length} MILESTONES COMPLETED
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-space-lg">
+          {roadmap.milestones.map((milestone, mIdx) => (
+            <div
+              key={milestone.id}
+              className="bg-surface-container-low border-[2px] border-[#000000] p-space-md flex flex-col gap-space-sm shadow-[3px_3px_0px_#000000]"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#000000] pb-space-xs">
+                <div>
+                  <span className="font-label-mono text-label-mono uppercase text-primary font-bold">
+                    PHASE 0{mIdx + 1} //
+                  </span>
+                  <h3 className="font-title text-title uppercase text-on-surface inline-block ml-2 font-bold">
+                    {milestone.title}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-space-sm">
+                  <span className="font-label-mono text-label-mono text-on-surface-variant uppercase">
+                    EST {milestone.estimatedHours} HOURS
+                  </span>
+                  <span className="px-space-xs py-0.5 bg-surface-container-highest font-label-mono text-label-mono border border-[#000000] uppercase font-bold">
+                    {milestone.tasks.length} ACTIONS
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-space-xs">
+                {milestone.tasks.map((task) => {
+                  const isAvailable = task.status === 'available';
+                  const isCompleted = task.status === 'completed';
+                  const isCurrentActive = task.id === activeTaskId;
 
                   return (
                     <div
                       key={task.id}
-                      onClick={() => setSelectedTask(task)}
-                      className={`p-4 rounded-2xl border cursor-pointer transition-all hover:border-surface-400 ${
-                        isCurrentActive
-                          ? 'border-emeraldAccent-500 bg-emeraldAccent-50/40 ring-2 ring-emeraldAccent-200'
-                          : isTaskCompleted
-                          ? 'border-surface-200 bg-surface-50'
-                          : isTaskLocked
-                          ? 'border-surface-200 bg-surface-100/50 cursor-not-allowed opacity-60'
-                          : 'border-surface-200 bg-white hover:bg-surface-50'
+                      onClick={() => handleLaunchTask(task)}
+                      className={`p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex flex-col justify-between gap-space-xs hover:bg-surface-container transition-all cursor-pointer ${
+                        isCurrentActive ? 'shadow-[4px_4px_0px_#60a5fa] border-primary' : 'shadow-[2px_2px_0px_#000000]'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1.5 flex-1">
-                          <div className="flex items-center space-x-2">
-                            {isTaskCompleted ? (
-                              <span className="flex items-center space-x-1 text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-emeraldAccent-100 text-emeraldAccent-800">
-                                <Check className="w-3 h-3 text-emeraldAccent-700" />
-                                <span>Completed & Verified</span>
-                              </span>
-                            ) : isTaskLocked ? (
-                              <span className="flex items-center space-x-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-200 text-charcoal-600">
-                                <Lock className="w-3 h-3" />
-                                <span>Prerequisite Locked</span>
-                              </span>
-                            ) : (
-                              <span className="flex items-center space-x-1 text-[11px] font-mono px-2 py-0.5 rounded bg-charcoal-100 text-charcoal-800 font-semibold">
-                                <span>Actionable</span>
-                              </span>
-                            )}
+                      <div className="flex items-start justify-between gap-space-xs">
+                        <span className="font-label-mono text-[10px] uppercase text-on-surface-variant font-bold">
+                          #{task.id}
+                        </span>
+                        <span
+                          className={`px-space-xs py-0.5 font-label-mono text-[10px] font-bold uppercase border border-[#000000] ${
+                            isCompleted
+                              ? 'bg-tertiary-fixed text-on-tertiary-fixed'
+                              : isAvailable
+                              ? 'bg-primary-container text-on-primary-container'
+                              : 'bg-surface-container-high text-on-surface'
+                          }`}
+                        >
+                          {task.status.toUpperCase()}
+                        </span>
+                      </div>
 
-                            <span className="text-[11px] font-mono text-charcoal-400">
-                              ~{task.estimatedMinutes}m
-                            </span>
-                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded uppercase border border-surface-200 text-charcoal-500">
-                              {task.difficulty}
-                            </span>
-                          </div>
+                      <h4 className="font-title text-title uppercase text-on-surface font-bold leading-tight">
+                        {task.title}
+                      </h4>
+                      <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                        {task.objective}
+                      </p>
 
-                          <h4 className="text-sm sm:text-base font-semibold text-charcoal-900">
-                            {task.title}
-                          </h4>
-
-                          <p className="text-xs text-charcoal-600 line-clamp-2">
-                            {task.objective}
-                          </p>
-
-                          <div className="text-[11px] text-charcoal-500 font-mono">
-                            Deliverable: <span className="text-charcoal-700">{task.expectedDeliverable}</span>
-                          </div>
-                        </div>
-
-                        {/* Action CTA */}
-                        <div className="flex flex-col items-end justify-center space-y-1 flex-shrink-0 pt-1">
-                          {!isTaskLocked && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleLaunchTask(task);
-                              }}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all ${
-                                isCurrentActive
-                                  ? 'bg-emeraldAccent-600 text-white'
-                                  : 'bg-charcoal-900 text-surface-50 hover:bg-charcoal-800'
-                              }`}
-                            >
-                              <span>{isTaskCompleted ? 'Review Submission' : 'Launch Workspace'}</span>
-                              <ChevronRight className="w-3 h-3" />
-                            </button>
-                          )}
-                        </div>
+                      <div className="flex items-center justify-between pt-space-xs border-t border-[#000000]/20 font-label-mono text-[11px]">
+                        <span className="text-on-surface-variant">⏱ {task.estimatedMinutes} MIN</span>
+                        <span className="font-bold text-primary flex items-center gap-1 uppercase">
+                          LAUNCH →
+                        </span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Task Inspection Drawer / Modal */}
-      {selectedTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-950/60 backdrop-blur-sm overflow-y-auto animate-fadeIn">
-          <div className="bg-white border border-surface-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-elevated relative my-8 space-y-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-emeraldAccent-100 text-emeraldAccent-800 font-semibold">
-                    Task Specification
-                  </span>
-                  <span className="text-xs font-mono text-charcoal-400">
-                    Est. Duration: {selectedTask.estimatedMinutes} min
-                  </span>
-                </div>
-                <h3 className="editorial-title text-2xl font-normal text-charcoal-900">
-                  {selectedTask.title}
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedTask(null)}
-                className="p-1.5 rounded-full text-charcoal-400 hover:text-charcoal-800 hover:bg-surface-100"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Objective & Why It Matters */}
-            <div className="space-y-3">
-              <div className="p-4 rounded-xl bg-surface-50 border border-surface-200 space-y-1">
-                <span className="text-[10px] font-mono uppercase font-bold text-charcoal-500">
-                  Core Objective
-                </span>
-                <p className="text-xs sm:text-sm text-charcoal-800 font-medium leading-relaxed">
-                  {selectedTask.objective}
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-emeraldAccent-50/50 border border-emeraldAccent-200 space-y-1">
-                <span className="text-[10px] font-mono uppercase font-bold text-emeraldAccent-800">
-                  Why This Matters (Prerequisite Context)
-                </span>
-                <p className="text-xs text-charcoal-700 leading-relaxed">
-                  {selectedTask.whyItMatters}
-                </p>
-              </div>
-            </div>
-
-            {/* Step-by-Step Instructions */}
-            <div className="space-y-2">
-              <span className="text-xs font-semibold text-charcoal-800 uppercase tracking-wide block">
-                Execution Steps:
-              </span>
-              <ol className="list-decimal list-inside space-y-1.5 text-xs text-charcoal-600 pl-1">
-                {selectedTask.instructions.map((ins, i) => (
-                  <li key={i} className="leading-relaxed">
-                    {ins}
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            {/* Expected Deliverable & Completion Criteria */}
-            <div className="p-4 rounded-xl bg-charcoal-900 text-surface-50 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase font-bold text-emeraldAccent-400">
-                  Expected Deliverable
-                </span>
-                <span className="text-[10px] font-mono text-charcoal-400">Auditable Evidence</span>
-              </div>
-              <p className="text-xs text-surface-200 font-mono">
-                {selectedTask.expectedDeliverable}
-              </p>
-              <div className="pt-2 border-t border-charcoal-800">
-                <span className="text-[10px] font-mono uppercase text-charcoal-400 block mb-1">
-                  Evaluation Criteria:
-                </span>
-                <ul className="space-y-1 text-xs text-charcoal-300">
-                  {selectedTask.completionCriteria.map((c, idx) => (
-                    <li key={idx} className="flex items-start space-x-1.5">
-                      <span className="text-emeraldAccent-400 font-bold">✓</span>
-                      <span>{c}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Launch Button */}
-            <div className="flex items-center justify-end space-x-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setSelectedTask(null)}
-                className="px-4 py-2 rounded-lg text-xs font-medium text-charcoal-700 hover:bg-surface-100"
-              >
-                Close
-              </button>
-              {selectedTask.status !== 'locked' && (
-                <button
-                  type="button"
-                  onClick={() => handleLaunchTask(selectedTask)}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emeraldAccent-600 hover:bg-emeraldAccent-700 text-white text-xs font-semibold shadow-sm transition-all hover:scale-105"
-                >
-                  <span>Launch Task Workspace</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

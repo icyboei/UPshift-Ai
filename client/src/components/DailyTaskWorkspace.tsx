@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  BookOpen,
-  Send,
-  Calendar,
-  AlertTriangle,
-  Code2,
-  ShieldCheck,
-  Check,
-  ExternalLink,
-} from 'lucide-react';
 import { RoadmapTask, TaskEvaluationResult } from '../types';
-import confetti from 'canvas-confetti';
 
 export const DailyTaskWorkspace: React.FC = () => {
   const {
@@ -30,399 +13,357 @@ export const DailyTaskWorkspace: React.FC = () => {
     setCurrentView,
   } = useApp();
 
-  // Find active task
   const allTasks = roadmap?.milestones.flatMap((m) => m.tasks) || [];
-  const currentTask = allTasks.find((t) => t.id === activeTaskId) || allTasks.find((t) => t.status === 'available');
+  const currentTask =
+    allTasks.find((t) => t.id === activeTaskId) ||
+    allTasks.find((t) => t.status === 'available') ||
+    allTasks[0];
 
-  // Focus Timer State
-  const [timerSeconds, setTimerSeconds] = useState<number>(0);
+  const [timerSeconds, setTimerSeconds] = useState<number>(25 * 60);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-
-  // Submission State
-  const [submissionText, setSubmissionText] = useState<string>(currentTask?.userSubmission || '');
+  const [submissionText, setSubmissionText] = useState<string>(
+    currentTask?.userSubmission ||
+      `// Empirical Deliverable Submission for Task: ${currentTask?.title || 'Benchmark'}\n// Verify your code satisfies all prerequisite constraints.\n\nfunction runBenchmark() {\n  console.log("Initializing vector retrieval benchmark...");\n  const start = performance.now();\n  // Your benchmark verification logic here\n  return { latencyMs: 8.4, recallRate: 0.984 };\n}\n\nrunBenchmark();`
+  );
+  const [submissionType, setSubmissionType] = useState<'code' | 'url' | 'notes'>('code');
   const [evaluationResult, setEvaluationResult] = useState<TaskEvaluationResult | null>(null);
   const [showEvaluationModal, setShowEvaluationModal] = useState<boolean>(false);
 
-  // Timer Tick
   useEffect(() => {
     let interval: any = null;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTimerSeconds((prev) => prev + 1);
+        setTimerSeconds((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
     }
     return () => clearInterval(interval);
   }, [isTimerRunning]);
 
+  const formatTimer = (totalSec: number) => {
+    const mins = Math.floor(totalSec / 60);
+    const secs = totalSec % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
+  const handleEvaluate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentTask) return;
+    const res = await submitTaskForEvaluation(currentTask, submissionText, 25);
+    if (res) {
+      setEvaluationResult(res);
+      setShowEvaluationModal(true);
+    }
+  };
+
   if (!currentTask) {
     return (
-      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
-        <p className="text-charcoal-600">No active task selected.</p>
+      <div className="p-space-lg bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000]">
+        <p className="font-label-mono uppercase">NO ACTIVE TASK SELECTED.</p>
         <button
           onClick={() => setCurrentView('roadmap')}
-          className="px-4 py-2 bg-emeraldAccent-600 text-white rounded-lg text-sm font-semibold"
+          className="mt-space-sm px-space-md py-space-xs bg-primary-container text-on-primary-container font-title uppercase border-[2px] border-[#000000]"
         >
-          View Roadmap
+          SELECT FROM ROADMAP
         </button>
       </div>
     );
   }
 
-  const formatTimer = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleEvaluate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!submissionText.trim()) return;
-
-    const timeSpent = Math.max(1, Math.round(timerSeconds / 60));
-    try {
-      const result = await submitTaskForEvaluation(currentTask, submissionText, timeSpent);
-      setEvaluationResult(result);
-      setShowEvaluationModal(true);
-
-      if (result.passed) {
-        confetti({
-          particleCount: 80,
-          spread: 60,
-          origin: { y: 0.7 },
-        });
-      }
-    } catch {
-      // Error handled in AppContext
-    }
-  };
-
-  const handleInsertSampleSubmission = () => {
-    setSubmissionText(
-`// Verification Implementation for: ${currentTask.title}
-function verifyExecution() {
-  console.log('1: Synchronous call started');
-  setTimeout(() => console.log('4: Timer macrotask executed after microtask drain'), 0);
-  Promise.resolve().then(() => console.log('2: Microtask executed in current tick'));
-  queueMicrotask(() => console.log('3: Queued microtask verified'));
-}
-
-verifyExecution();
-// Deliverable notes:
-// Microtasks always drain completely prior to macrotask timer execution.
-// This prevents asynchronous race conditions when dealing with pending promise chains.`
-    );
-  };
-
   return (
-    <div className="max-w-4xl mx-auto py-8 sm:py-12 px-4 space-y-8 animate-fadeIn">
-      {/* Workspace Header & Action Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-200 pb-6">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-emeraldAccent-100 text-emeraldAccent-800 font-semibold">
-              Daily Action Workspace
+    <div className="flex flex-col w-full pb-space-xl animate-fadeIn">
+      {/* Top Strip */}
+      <div className="w-full bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md mb-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+        <div className="flex flex-col gap-space-xs">
+          <div className="flex items-center gap-space-sm flex-wrap">
+            <span className="px-space-sm py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">
+              TASK: #{currentTask.id.toUpperCase()}
             </span>
-            <span className="text-xs font-mono text-charcoal-400">
-              Difficulty: {currentTask.difficulty}
+            <span className="px-space-sm py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono uppercase border-[2px] border-[#000000]">
+              DIFFICULTY: {currentTask.difficulty.toUpperCase()}
+            </span>
+            <span className="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">
+              EST: {currentTask.estimatedMinutes} MIN
             </span>
           </div>
-          <h1 className="editorial-title text-2xl sm:text-3xl font-normal text-charcoal-900">
+          <h1 className="font-headline-md text-headline-md text-on-surface uppercase tracking-tight m-0">
             {currentTask.title}
           </h1>
-        </div>
-
-        {/* Focus Timer Widget */}
-        <div className="flex items-center space-x-3 bg-white border border-surface-200 rounded-2xl p-2.5 px-4 shadow-subtle flex-shrink-0">
-          <div className="text-right">
-            <div className="text-xs font-mono text-charcoal-400 uppercase tracking-wider">
-              Focus Timer
-            </div>
-            <div className="text-xl font-mono font-bold text-charcoal-900">
-              {formatTimer(timerSeconds)}
-            </div>
-          </div>
-          <div className="flex items-center space-x-1 pl-2 border-l border-surface-200">
-            <button
-              onClick={() => setIsTimerRunning(!isTimerRunning)}
-              className={`p-2 rounded-xl transition-colors ${
-                isTimerRunning
-                  ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
-                  : 'bg-emeraldAccent-600 text-white hover:bg-emeraldAccent-700'
-              }`}
-            >
-              {isTimerRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            </button>
-            <button
-              onClick={() => {
-                setIsTimerRunning(false);
-                setTimerSeconds(0);
-              }}
-              title="Reset Timer"
-              className="p-2 rounded-xl bg-surface-100 text-charcoal-600 hover:bg-surface-200 transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {error && (
-        <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs">
-          {error}
-        </div>
-      )}
-
-      {/* Task Specification Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Objective */}
-        <div className="p-5 rounded-2xl bg-white border border-surface-200 shadow-subtle space-y-2">
-          <span className="text-[10px] font-mono uppercase font-bold text-charcoal-500">
-            Today's Objective
-          </span>
-          <p className="text-xs sm:text-sm text-charcoal-800 font-medium leading-relaxed">
+          <p className="font-body-md text-body-md text-on-surface-variant m-0 max-w-2xl">
             {currentTask.objective}
           </p>
         </div>
 
-        {/* Why It Matters */}
-        <div className="p-5 rounded-2xl bg-emeraldAccent-50/50 border border-emeraldAccent-200 shadow-subtle space-y-2">
-          <span className="text-[10px] font-mono uppercase font-bold text-emeraldAccent-800">
-            Why This Matters (Prerequisite Defense)
-          </span>
-          <p className="text-xs text-charcoal-700 leading-relaxed">
-            {currentTask.whyItMatters}
-          </p>
+        {/* Focus Timer Unit */}
+        <div className="flex flex-col items-start md:items-end gap-space-xs border-[2px] border-[#000000] bg-surface-container-low p-space-sm shadow-[3px_3px_0px_#000000]">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-primary">timer</span>
+            <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface-variant">
+              FOCUS SESSION
+            </span>
+          </div>
+          <div className="font-headline-sm text-headline-sm font-black text-on-surface tracking-wider">
+            {formatTimer(timerSeconds)}
+          </div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <button
+              onClick={() => setIsTimerRunning(!isTimerRunning)}
+              className="px-space-xs py-0.5 bg-primary-container text-on-primary-container font-label-mono text-[11px] font-bold border border-[#000000] uppercase hover:opacity-90"
+            >
+              {isTimerRunning ? 'PAUSE' : 'START'}
+            </button>
+            <button
+              onClick={() => {
+                setIsTimerRunning(false);
+                setTimerSeconds(25 * 60);
+              }}
+              className="px-space-xs py-0.5 bg-surface-container-high font-label-mono text-[11px] font-bold border border-[#000000] uppercase hover:bg-surface-container"
+            >
+              RESET
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Instructions & Resources */}
-      <div className="p-6 rounded-2xl bg-white border border-surface-200 shadow-subtle space-y-4">
-        <h3 className="text-xs font-bold text-charcoal-900 uppercase tracking-wide flex items-center space-x-2">
-          <BookOpen className="w-4 h-4 text-emeraldAccent-600" />
-          <span>Execution Protocol & References</span>
-        </h3>
+      {/* Main Split Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+        {/* Left Side: Requirements & Instructions (Span 6) */}
+        <div className="lg:col-span-6 flex flex-col gap-space-lg">
+          {/* Why It Matters */}
+          <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md">
+            <div className="flex items-center gap-space-xs border-b-[2px] border-[#000000] pb-space-xs mb-space-sm">
+              <span className="material-symbols-outlined text-primary text-[20px]">lightbulb</span>
+              <h2 className="font-title text-title uppercase m-0 font-bold">
+                WHY THIS MATTERS FOR YOUR TARGET ROLE
+              </h2>
+            </div>
+            <p className="font-body-md text-body-md text-on-surface-variant m-0">
+              {currentTask.whyItMatters}
+            </p>
+          </div>
 
-        <div className="space-y-2">
-          <span className="text-xs font-medium text-charcoal-700">Step-by-step deliverable path:</span>
-          <ol className="list-decimal list-inside space-y-1.5 text-xs text-charcoal-600 pl-1">
-            {currentTask.instructions.map((ins, i) => (
-              <li key={i} className="leading-relaxed">
-                {ins}
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        {currentTask.usefulResources && currentTask.usefulResources.length > 0 && (
-          <div className="pt-3 border-t border-surface-100">
-            <span className="text-[11px] font-mono text-charcoal-400 uppercase tracking-wide block mb-2">
-              Curated Reference Materials:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {currentTask.usefulResources.map((res, i) => (
+          {/* Prerequisite Checklist */}
+          <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md">
+            <div className="flex items-center justify-between border-b-[2px] border-[#000000] pb-space-xs mb-space-sm">
+              <div className="flex items-center gap-space-xs">
+                <span className="material-symbols-outlined text-tertiary text-[20px]">verified</span>
+                <h2 className="font-title text-title uppercase m-0 font-bold">
+                  PREREQUISITE KNOWLEDGE VERIFIED
+                </h2>
+              </div>
+              <span className="font-label-mono text-label-mono px-space-xs py-0.5 bg-tertiary-fixed text-on-tertiary-fixed border border-[#000000] font-bold">
+                {currentTask.prerequisiteKnowledge.length} PREREQS
+              </span>
+            </div>
+            <div className="flex flex-col gap-space-xs">
+              {currentTask.prerequisiteKnowledge.map((item, idx) => (
                 <div
-                  key={i}
-                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 border border-surface-200 text-xs text-charcoal-800 font-medium"
+                  key={idx}
+                  className="flex items-center gap-space-sm p-space-xs bg-surface-container-low border border-[#000000]"
                 >
-                  <span>{res.title}</span>
-                  <ExternalLink className="w-3 h-3 text-charcoal-400" />
+                  <span className="w-2 h-2 bg-tertiary"></span>
+                  <span className="font-label-code text-label-code text-on-surface font-bold">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-        )}
-      </div>
 
-      {/* Interactive Deliverable Submission Workbench */}
-      <div className="bg-white border border-surface-200 rounded-3xl p-6 sm:p-8 shadow-subtle space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <span className="text-[11px] font-mono text-emeraldAccent-700 uppercase tracking-wider font-semibold">
-              Evidence Submission
-            </span>
-            <h3 className="text-lg font-bold text-charcoal-900">
-              Submit Your Deliverable for Gemma 4 Evaluation
-            </h3>
-            <p className="text-xs text-charcoal-500 font-mono mt-0.5">
-              Target: <span className="text-charcoal-700 font-semibold">{currentTask.expectedDeliverable}</span>
-            </p>
+          {/* Step-by-Step Instructions */}
+          <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md">
+            <div className="flex items-center gap-space-xs border-b-[2px] border-[#000000] pb-space-xs mb-space-sm">
+              <span className="material-symbols-outlined text-primary text-[20px]">format_list_numbered</span>
+              <h2 className="font-title text-title uppercase m-0 font-bold">
+                EXECUTION INSTRUCTIONS
+              </h2>
+            </div>
+            <div className="flex flex-col gap-space-sm">
+              {currentTask.instructions.map((step, idx) => (
+                <div key={idx} className="flex items-start gap-space-sm">
+                  <span className="w-6 h-6 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-label-mono text-xs font-bold shrink-0">
+                    {idx + 1}
+                  </span>
+                  <p className="font-body-md text-body-md text-on-surface m-0 pt-0.5">
+                    {step}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <button
-            type="button"
-            onClick={handleInsertSampleSubmission}
-            className="text-xs font-mono text-emeraldAccent-700 hover:text-emeraldAccent-800 underline underline-offset-4 self-start sm:self-auto"
-          >
-            Insert Sample Deliverable
-          </button>
         </div>
 
-        <form onSubmit={handleEvaluate} className="space-y-4">
-          <div className="relative">
-            <textarea
-              rows={8}
-              value={submissionText}
-              onChange={(e) => setSubmissionText(e.target.value)}
-              placeholder="Paste executable code, test outputs, architectural reasoning, or reflection notes here..."
-              className="w-full p-4 rounded-2xl border border-surface-300 bg-surface-50 text-charcoal-900 font-mono text-xs leading-relaxed placeholder-charcoal-400 focus:outline-none focus:border-emeraldAccent-500 focus:ring-2 focus:ring-emeraldAccent-200"
-              required
-            />
-            <div className="absolute bottom-3 right-3 text-[10px] font-mono text-charcoal-400 bg-white/80 px-2 py-0.5 rounded border border-surface-200">
-              {submissionText.length} chars
+        {/* Right Side: Deliverable Submission Terminal (Span 6) */}
+        <div className="lg:col-span-6 flex flex-col gap-space-lg">
+          <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] flex flex-col">
+            {/* Terminal Header */}
+            <div className="bg-black text-white p-space-sm flex items-center justify-between border-b-[3px] border-black">
+              <div className="flex items-center gap-space-xs">
+                <span className="material-symbols-outlined text-primary-container text-[20px]">
+                  terminal
+                </span>
+                <span className="font-title text-title uppercase tracking-wider font-bold">
+                  EVIDENCE SUBMISSION TERMINAL
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {(['code', 'url', 'notes'] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setSubmissionType(type)}
+                    className={`px-space-xs py-0.5 font-label-mono text-[11px] uppercase font-bold border border-white ${
+                      submissionType === type
+                        ? 'bg-primary-container text-on-primary-container'
+                        : 'bg-black text-white hover:bg-neutral-800'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Completion Criteria Checklist */}
-          <div className="p-4 rounded-xl bg-surface-100 border border-surface-200 space-y-2">
-            <span className="text-[10px] font-mono uppercase text-charcoal-600 font-bold block">
-              Gemma 4 Verification Rubric (Completion Criteria):
-            </span>
-            <ul className="space-y-1 text-xs text-charcoal-700">
-              {currentTask.completionCriteria.map((c, idx) => (
-                <li key={idx} className="flex items-start space-x-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emeraldAccent-600 mt-1.5 flex-shrink-0" />
-                  <span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <form onSubmit={handleEvaluate} className="p-space-md flex flex-col gap-space-md">
+              <div className="flex flex-col gap-space-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+                    PASTE {submissionType.toUpperCase()} DELIVERABLE
+                  </span>
+                  <span className="font-label-mono text-body-sm text-on-surface-variant">
+                    GEMMA 4 STRICT EVALUATION
+                  </span>
+                </div>
+                <textarea
+                  value={submissionText}
+                  onChange={(e) => setSubmissionText(e.target.value)}
+                  rows={14}
+                  className="w-full bg-[#1b1b1e] text-[#6dfe9c] font-label-code text-label-code p-space-md border-[3px] border-[#000000] focus:outline-none focus:shadow-[4px_4px_0px_#60a5fa] selection:bg-primary selection:text-white"
+                  placeholder="Paste benchmark script, commit hash, or architecture notes..."
+                  required
+                />
+              </div>
 
-          {/* Action Row */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-            <div className="flex items-center space-x-2">
+              {/* Deliverable Expectations */}
+              <div className="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex flex-col gap-space-xs">
+                <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+                  DELIVERABLE EXPECTATION:
+                </span>
+                <p className="font-body-sm text-body-sm text-on-surface-variant m-0">
+                  {currentTask.expectedDeliverable}
+                </p>
+                <div className="flex flex-wrap gap-space-xs pt-1">
+                  {currentTask.completionCriteria.map((crit, idx) => (
+                    <span
+                      key={idx}
+                      className="px-space-xs py-0.5 bg-surface-container text-on-surface font-label-mono text-[10px] border border-[#000000] font-bold uppercase"
+                    >
+                      ✓ {crit}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
               <button
-                type="button"
-                onClick={() => setCurrentView('roadmap')}
-                className="px-4 py-2.5 rounded-xl border border-surface-300 text-charcoal-700 hover:bg-surface-100 text-xs font-medium transition-colors"
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-space-sm bg-primary-container text-on-primary-container font-title text-title uppercase tracking-wider border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-space-sm font-bold"
               >
-                Back to Roadmap
+                <span className="material-symbols-outlined text-[20px]">
+                  assignment_turned_in
+                </span>
+                {isLoading ? 'EVALUATING WITH GEMMA 4...' : 'SUBMIT EVIDENCE FOR GEMMA 4 EVALUATION'}
               </button>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading || submissionText.trim().length === 0}
-              className="inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-charcoal-900 hover:bg-charcoal-800 text-surface-50 text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] disabled:opacity-40"
-            >
-              {isLoading ? (
-                <>
-                  <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Evaluating Evidence...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 text-emeraldAccent-400" />
-                  <span>Submit for Gemma 4 Evaluation</span>
-                  <Send className="w-3.5 h-3.5" />
-                </>
-              )}
-            </button>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
 
       {/* Evaluation Results Modal */}
       {showEvaluationModal && evaluationResult && (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowEvaluationModal(false);
-          }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-950/70 backdrop-blur-sm overflow-y-auto animate-fadeIn cursor-pointer"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white border border-surface-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-elevated relative my-8 space-y-6 cursor-default"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span
-                    className={`text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-semibold ${
-                      evaluationResult.passed
-                        ? 'bg-emeraldAccent-100 text-emeraldAccent-800'
-                        : 'bg-amber-100 text-amber-800'
-                    }`}
-                  >
-                    {evaluationResult.passed ? 'Rubric Satisfied' : 'Prerequisite Revision Recommended'}
-                  </span>
-                  <span className="text-xs font-mono text-charcoal-400">
-                    Score: {evaluationResult.scorePercentage}%
-                  </span>
-                </div>
-                <h3 className="editorial-title text-2xl font-normal text-charcoal-900">
-                  Evidence Evaluation Report
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[10px_10px_0px_#000000] max-w-2xl w-full p-space-lg flex flex-col gap-space-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm">
+              <div className="flex items-center gap-space-sm">
+                <span className="w-4 h-4 bg-tertiary-fixed border-[2px] border-[#000000]"></span>
+                <h3 className="font-headline-sm text-headline-sm uppercase text-on-surface m-0 font-bold">
+                  GEMMA 4 EVIDENCE VERIFICATION REPORT
                 </h3>
               </div>
               <button
-                type="button"
                 onClick={() => setShowEvaluationModal(false)}
-                className="p-2 rounded-full text-charcoal-400 hover:text-charcoal-800 hover:bg-surface-100 transition-colors"
-                title="Close Report"
+                className="w-8 h-8 flex items-center justify-center bg-surface-container-high border-[2px] border-[#000000] font-bold"
               >
                 ✕
               </button>
             </div>
 
-            {/* Qualitative Feedback */}
-            <div className="p-4 rounded-2xl bg-surface-50 border border-surface-200 text-xs sm:text-sm text-charcoal-800 leading-relaxed font-sans">
-              {evaluationResult.qualitativeFeedback}
-            </div>
-
-            {/* Strengths & Blindspots */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-emeraldAccent-50/50 border border-emeraldAccent-200 space-y-1.5">
-                <span className="text-[10px] font-mono uppercase text-emeraldAccent-800 font-bold block">
-                  Demonstrated Competency:
-                </span>
-                <ul className="space-y-1 text-xs text-charcoal-700">
-                  {evaluationResult.strengthsDemonstrated.map((s, idx) => (
-                    <li key={idx} className="flex items-start space-x-1.5">
-                      <span className="text-emeraldAccent-600 font-bold">✓</span>
-                      <span>{s}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200 space-y-1.5">
-                <span className="text-[10px] font-mono uppercase text-amber-800 font-bold block">
-                  Identified Blindspots:
-                </span>
-                <ul className="space-y-1 text-xs text-charcoal-700">
-                  {evaluationResult.blindSpotsIdentified.map((b, idx) => (
-                    <li key={idx} className="flex items-start space-x-1.5">
-                      <span className="text-amber-600 font-bold">⚠</span>
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Adaptive Roadmap Shift Banner */}
-            <div className="p-4 rounded-xl bg-charcoal-900 text-surface-50 space-y-1.5">
-              <span className="text-[10px] font-mono uppercase font-bold text-emeraldAccent-400">
-                Adaptive Roadmap Recalibration:
+            <div className="flex items-center justify-between p-space-sm bg-surface-container-low border-[2px] border-[#000000]">
+              <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+                EMPIRICAL SCORE & STATUS:
               </span>
-              <p className="text-xs text-surface-200 font-mono">
-                {evaluationResult.adaptiveRoadmapChanges.description}
-              </p>
-              <p className="text-[11px] text-charcoal-400">
-                Action Rationale: {evaluationResult.actionRationale}
+              <div className="flex items-center gap-space-sm">
+                <span className="font-headline-sm text-headline-sm uppercase font-bold text-tertiary">
+                  {evaluationResult.scorePercentage}%
+                </span>
+                <span className="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase font-bold border border-[#000000]">
+                  {evaluationResult.passed ? 'PASSED & VERIFIED' : 'NEEDS REVISION'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-space-xs">
+              <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+                QUALITATIVE FEEDBACK:
+              </span>
+              <p className="font-body-md text-body-md text-on-surface-variant p-space-sm bg-surface-container border border-[#000000] m-0">
+                {evaluationResult.qualitativeFeedback}
               </p>
             </div>
 
-            {/* Modal Controls */}
-            <div className="flex items-center justify-end space-x-3 pt-2 border-t border-surface-200">
+            <div className="flex flex-col gap-space-xs">
+              <span className="font-label-mono text-label-mono uppercase font-bold text-tertiary">
+                DEMONSTRATED STRENGTHS:
+              </span>
+              <div className="flex flex-col gap-1">
+                {evaluationResult.strengthsDemonstrated.map((str, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-on-surface font-body-sm">
+                    <span className="w-1.5 h-1.5 bg-tertiary"></span>
+                    <span>{str}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {evaluationResult.blindSpotsIdentified.length > 0 && (
+              <div className="flex flex-col gap-space-xs">
+                <span className="font-label-mono text-label-mono uppercase font-bold text-secondary">
+                  BLIND SPOTS & IMPROVEMENTS:
+                </span>
+                <div className="flex flex-col gap-1">
+                  {evaluationResult.blindSpotsIdentified.map((gap, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-on-surface font-body-sm">
+                      <span className="w-1.5 h-1.5 bg-secondary"></span>
+                      <span>{gap}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-space-sm pt-space-xs border-t-[2px] border-[#000000]">
               <button
-                type="button"
+                onClick={() => setShowEvaluationModal(false)}
+                className="px-space-md py-space-xs bg-surface-container-high border-[2px] border-[#000000] font-title uppercase"
+              >
+                REVISE SUBMISSION
+              </button>
+              <button
                 onClick={() => {
                   setShowEvaluationModal(false);
                   setCurrentView('roadmap');
                 }}
-                className="px-5 py-2.5 rounded-xl bg-emeraldAccent-600 hover:bg-emeraldAccent-700 text-white text-xs font-semibold shadow-sm transition-all hover:scale-105"
+                className="px-space-lg py-space-xs bg-primary-container text-on-primary-container font-title uppercase border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]"
               >
-                Proceed to Updated Roadmap
+                RETURN TO ROADMAP
               </button>
             </div>
           </div>

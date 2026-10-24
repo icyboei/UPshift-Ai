@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
+import { Sidebar } from './components/Sidebar';
 import { LandingView } from './components/LandingView';
 import { OnboardingModal } from './components/OnboardingModal';
 import { AssessmentStudio } from './components/AssessmentStudio';
@@ -9,60 +10,54 @@ import { RoadmapView } from './components/RoadmapView';
 import { DailyTaskWorkspace } from './components/DailyTaskWorkspace';
 import { MaintenanceCenter } from './components/MaintenanceCenter';
 import { AnalyticsView } from './components/AnalyticsView';
+import { SystemDetailsView } from './components/SystemDetailsView';
 import { SettingsModal } from './components/SettingsModal';
-import { ShieldCheck, Sparkles, Terminal } from 'lucide-react';
 
 export const AppContent: React.FC = () => {
-  const { currentView, setCurrentView } = useApp();
+  const { currentView } = useApp();
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-50 text-charcoal-900 selection:bg-emeraldAccent-200">
+    <div className="min-h-screen bg-background font-body-md text-on-surface antialiased flex flex-col">
+      {/* Neo-Brutalist Fixed Header */}
       <Navbar />
 
-      {/* Main View Router */}
-      <main className="flex-1">
-        {currentView === 'landing' && <LandingView />}
-        {currentView === 'onboarding' && <OnboardingModal />}
-        {currentView === 'assessment' && <AssessmentStudio />}
-        {currentView === 'assessment_results' && <AssessmentResultsView />}
-        {currentView === 'roadmap' && <RoadmapView />}
-        {currentView === 'task_workspace' && <DailyTaskWorkspace />}
-        {currentView === 'maintenance' && <MaintenanceCenter />}
-        {currentView === 'analytics' && <AnalyticsView />}
-        {currentView === 'settings' && <SettingsModal />}
-      </main>
+      {/* Neo-Brutalist Sidebar (Desktop) */}
+      <Sidebar />
 
-      {/* Persistent Editorial Footer */}
-      <footer className="border-t border-surface-200 bg-white/70 py-8 px-4 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-charcoal-500 font-sans">
-          <div className="flex items-center space-x-2">
-            <span className="font-display font-bold text-charcoal-900">UPSHIFT AI</span>
-            <span>•</span>
-            <span>Adaptive Personal Development Engine</span>
-            <span>•</span>
-            <span className="font-mono text-[11px] text-emeraldAccent-700 font-medium">Powered by Gemma 4</span>
-          </div>
+      {/* Content Canvas */}
+      <div className="lg:pl-64 flex-1 flex flex-col">
+        <main className="w-full min-h-screen pt-16 bg-background px-gutter py-space-lg flex-1">
+          {currentView === 'landing' && <LandingView />}
+          {currentView === 'onboarding' && <OnboardingModal />}
+          {currentView === 'assessment' && <AssessmentStudio />}
+          {currentView === 'assessment_results' && <AssessmentResultsView />}
+          {currentView === 'roadmap' && <RoadmapView />}
+          {currentView === 'task_workspace' && <DailyTaskWorkspace />}
+          {currentView === 'maintenance' && <MaintenanceCenter />}
+          {currentView === 'analytics' && <AnalyticsView />}
+          {currentView === 'system_details' && <SystemDetailsView />}
+          {currentView === 'settings' && <SettingsModal />}
+        </main>
 
-          <div className="flex items-center space-x-6 text-[11px] font-mono text-charcoal-500">
-            <span className="flex items-center space-x-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emeraldAccent-600" />
-              <span>Evidence Over Speculation</span>
-            </span>
-            <button
-              onClick={() => setCurrentView('settings')}
-              className="hover:text-charcoal-900 transition-colors"
-            >
-              System Status
-            </button>
-            <button
-              onClick={() => setCurrentView('landing')}
-              className="hover:text-charcoal-900 transition-colors"
-            >
-              Architecture & Vision
-            </button>
+        {/* Minimal Technical Footer */}
+        <footer className="border-t-[2px] border-[#000000] bg-surface-container-lowest py-space-md px-gutter mt-auto">
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-label-mono text-label-mono">
+            <div className="flex items-center gap-space-xs">
+              <span className="font-bold text-on-surface uppercase">UPSHIFT AI</span>
+              <span>//</span>
+              <span>EVIDENCE-DRIVEN ADAPTIVE ENGINE</span>
+              <span>//</span>
+              <span className="text-tertiary font-bold uppercase">GEMMA 4 RUNNING</span>
+            </div>
+
+            <div className="flex items-center gap-space-md uppercase">
+              <span>LATENCY: 12ms</span>
+              <span>RETENTION: 94.2%</span>
+              <span>STATUS: NOMINAL</span>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 };

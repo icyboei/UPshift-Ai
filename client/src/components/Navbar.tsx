@@ -1,16 +1,5 @@
 import React from 'react';
 import { useApp, AppView } from '../context/AppContext';
-import {
-  Compass,
-  CheckCircle2,
-  Sparkles,
-  RotateCcw,
-  BarChart3,
-  CalendarCheck,
-  Settings,
-  ShieldCheck,
-  Zap,
-} from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const {
@@ -22,126 +11,154 @@ export const Navbar: React.FC = () => {
     activeTaskId,
   } = useApp();
 
-  const navItems: { view: AppView; label: string; icon: React.ReactNode; requiresRoadmap?: boolean }[] = [
-    { view: 'roadmap', label: 'Roadmap', icon: <Compass className="w-4 h-4" />, requiresRoadmap: true },
-    { view: 'task_workspace', label: 'Daily Task', icon: <CheckCircle2 className="w-4 h-4" />, requiresRoadmap: true },
-    { view: 'maintenance', label: 'Retention', icon: <RotateCcw className="w-4 h-4" />, requiresRoadmap: true },
-    { view: 'analytics', label: 'Evidence & Metrics', icon: <BarChart3 className="w-4 h-4" />, requiresRoadmap: true },
-  ];
-
   const isLiveGemma = systemStatus?.mode === 'gemma_live';
 
   return (
-    <header className="sticky top-0 z-40 bg-surface-50/95 backdrop-blur-md border-b border-surface-200 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo & Editorial Title */}
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setCurrentView('landing')}
-              className="flex items-center space-x-2 text-left group"
-            >
-              <div className="w-9 h-9 rounded-lg bg-charcoal-900 flex items-center justify-center text-emeraldAccent-400 font-mono font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
-                ▲
-              </div>
-              <div>
-                <div className="flex items-center space-x-1.5">
-                  <span className="font-display text-xl font-bold tracking-tight text-charcoal-900">
-                    UPSHIFT
-                  </span>
-                  <span className="font-mono text-xs font-semibold px-1.5 py-0.5 rounded bg-emeraldAccent-100 text-emeraldAccent-800 border border-emeraldAccent-200">
-                    AI
-                  </span>
-                </div>
-                <p className="text-[10px] text-charcoal-500 font-sans tracking-wide uppercase">
-                  Powered by Gemma 4
-                </p>
-              </div>
-            </button>
-
-            {/* Inference Badge */}
-            <div className="hidden md:flex items-center ml-3 pl-3 border-l border-surface-200">
-              <div
-                className={`flex items-center space-x-1.5 text-xs px-2.5 py-1 rounded-full border ${
-                  isLiveGemma
-                    ? 'bg-emeraldAccent-50 border-emeraldAccent-200 text-emeraldAccent-800'
-                    : 'bg-surface-100 border-surface-300 text-charcoal-700'
-                }`}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    isLiveGemma ? 'bg-emeraldAccent-500 animate-pulse' : 'bg-charcoal-400'
-                  }`}
-                />
-                <span className="font-medium font-mono text-[11px]">
-                  {isLiveGemma ? 'Gemma 4 Live' : 'High-Fidelity Engine'}
-                </span>
-              </div>
-            </div>
+    <header className="fixed top-0 left-0 right-0 h-16 bg-surface-container-lowest z-50 border-b-[3px] border-[#000000]">
+      <div className="h-16 w-full px-gutter flex items-center justify-between">
+        {/* Left Brand & System Mode Status */}
+        <div className="flex items-center gap-space-lg">
+          <div
+            onClick={() => setCurrentView('landing')}
+            className="flex items-center gap-space-sm cursor-pointer select-none group"
+          >
+            <div className="w-4 h-4 bg-primary-container border-[2px] border-[#000000] shadow-[1px_1px_0px_#000000] group-hover:scale-110 transition-transform"></div>
+            <span className="font-title text-title uppercase tracking-wider text-on-surface">
+              UPSHIFT // AI
+            </span>
           </div>
 
-          {/* Center Navigation Links (when roadmap exists) */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {roadmap && (
-              <>
-                {navItems.map(item => {
-                  const isActive = currentView === item.view;
-                  return (
-                    <button
-                      key={item.view}
-                      onClick={() => setCurrentView(item.view)}
-                      className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                        isActive
-                          ? 'bg-charcoal-900 text-surface-50 shadow-sm'
-                          : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-surface-100'
-                      }`}
-                    >
-                      {item.icon}
-                      <span>{item.label}</span>
-                      {item.view === 'task_workspace' && activeTaskId && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-emeraldAccent-400 animate-ping" />
-                      )}
-                    </button>
-                  );
-                })}
-              </>
-            )}
-          </nav>
+          <div className="hidden xl:flex items-center gap-space-sm">
+            <div className="flex items-center px-space-sm py-space-xs bg-tertiary-fixed border-[2px] border-[#000000] shadow-[1px_1px_0px_#000000]">
+              <span className="font-label-mono text-label-mono text-on-tertiary-fixed font-bold uppercase">
+                {isLiveGemma ? 'GEMMA 4: ACTIVE' : 'GEMMA 4: HIGH-FIDELITY'}
+              </span>
+            </div>
+            <div className="flex items-center px-space-sm py-space-xs bg-surface-container-high border-[2px] border-[#000000]">
+              <span className="font-label-mono text-label-mono text-on-surface font-bold uppercase">
+                MODE: ADAPTIVE
+              </span>
+            </div>
+          </div>
+        </div>
 
-          {/* Right Action Buttons */}
-          <div className="flex items-center space-x-2.5">
-            {/* Quick Seed Demo Profile Button */}
+        {/* Center Navigation Tabs */}
+        <nav className="hidden lg:flex items-center gap-space-sm">
+          <button
+            onClick={() => setCurrentView('roadmap')}
+            className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'roadmap'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            ROADMAP
+          </button>
+
+          <button
+            onClick={() => setCurrentView('assessment')}
+            className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'assessment'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            CHAT & ASSESSMENT
+          </button>\n\n          <button
+            onClick={() => setCurrentView('analytics')}
+            className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'analytics'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            SKILL GAPS & EVIDENCE
+          </button>
+
+          <button
+            onClick={() => setCurrentView('task_workspace')}
+            className={`relative px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'task_workspace'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            DAILY ACTIONS
+            {activeTaskId && (
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-secondary-container border border-[#000000] rounded-full animate-ping" />
+            )}
+          </button>
+
+          <button
+            onClick={() => setCurrentView('maintenance')}
+            className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'maintenance'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            MAINTENANCE
+          </button>
+
+          <button
+            onClick={() => setCurrentView('system_details')}
+            className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
+              currentView === 'system_details'
+                ? 'bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border-[2px] border-transparent'
+            }`}
+          >
+            SPECS & DIRECTORY
+          </button>
+        </nav>
+
+        {/* Right Action Controls */}
+        <div className="flex items-center gap-space-md">
+          <div className="hidden md:flex items-center px-space-sm py-space-xs bg-surface-container-lowest border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]">
+            <span className="font-label-mono text-label-mono text-on-surface-variant uppercase">
+              LATENCY: 12ms
+            </span>
+          </div>
+
+          <div className="flex items-center gap-space-sm">
+            {/* Quick Demo Seed */}
             <button
               onClick={loadSeedDemo}
-              title="Instantly load a complete, realistic learner journey with completed baseline, roadmap, and evaluations"
-              className="flex items-center space-x-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-surface-300 bg-surface-100 text-charcoal-800 hover:bg-surface-200 hover:border-surface-400 transition-colors"
+              title="Load Seeded Demo Journey"
+              className="px-space-sm py-space-xs bg-surface-container-high border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface hover:bg-surface-container transition-all shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px]"
             >
-              <Zap className="w-3.5 h-3.5 text-emeraldAccent-600" />
-              <span className="hidden sm:inline">Load Demo Profile</span>
-              <span className="sm:hidden">Demo</span>
+              [DEMO JOURNEY]
             </button>
 
-            {/* New Assessment / Primary CTA */}
+            {/* Start New Goal */}
             <button
               onClick={() => setCurrentView('onboarding')}
-              className="flex items-center space-x-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-emeraldAccent-600 hover:bg-emeraldAccent-700 text-white shadow-sm transition-all hover:scale-[1.02]"
+              className="px-space-sm py-space-xs bg-primary-container text-on-primary-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold hover:bg-primary-fixed transition-all shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px]"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{roadmap ? 'New Goal' : 'Start Assessment'}</span>
+              {roadmap ? '[RECALIBRATE]' : '[START GOAL]'}
             </button>
 
-            {/* Settings Modal Button */}
+            {/* Settings Modal Toggle */}
             <button
               onClick={() => setCurrentView('settings')}
-              title="Engine status, API configuration, and data export"
-              className={`p-2 rounded-lg border transition-colors ${
-                currentView === 'settings'
-                  ? 'bg-charcoal-900 text-white border-charcoal-900'
-                  : 'bg-surface-100 border-surface-200 text-charcoal-600 hover:bg-surface-200'
-              }`}
+              aria-label="Settings and System State"
+              className="w-8 h-8 flex items-center justify-center bg-surface-container-lowest border-[2px] border-[#000000] hover:bg-surface-container-high transition-colors shadow-[2px_2px_0px_#000000]"
             >
-              <Settings className="w-4 h-4" />
+              <span className="material-symbols-outlined text-[18px] text-on-surface">
+                tune
+              </span>
             </button>
+
+            {/* Profile Avatar */}
+            <div
+              onClick={() => setCurrentView('landing')}
+              title="Learner Access Terminal"
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-[2px] border-[#000000] cursor-pointer hover:opacity-90 shadow-[2px_2px_0px_#000000]"
+            >
+              <span className="material-symbols-outlined text-on-primary text-[18px]">
+                person
+              </span>
+            </div>
           </div>
         </div>
       </div>

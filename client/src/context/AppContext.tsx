@@ -22,6 +22,7 @@ export type AppView =
   | 'task_workspace'
   | 'analytics'
   | 'maintenance'
+  | 'system_details'
   | 'settings';
 
 interface AppContextType {

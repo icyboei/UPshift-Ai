@@ -1,0 +1,13 @@
+services:
+  upshift-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: upshift-ai-production
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - GEMMA_API_KEY=${GEMMA_API_KEY:-}
+    restart: unless-stopped

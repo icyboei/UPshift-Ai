@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import {
-  Settings,
-  Shield,
-  Download,
-  Upload,
-  Trash2,
-  X,
-  Check,
-  Server,
-  Key,
-  Lock,
-} from 'lucide-react';
 
 export const SettingsModal: React.FC = () => {
   const {
@@ -24,164 +12,110 @@ export const SettingsModal: React.FC = () => {
 
   const [importText, setImportText] = useState('');
   const [importStatus, setImportStatus] = useState<string | null>(null);
-  const [resetConfirm, setResetConfirm] = useState(false);
 
   const handleImport = (e: React.FormEvent) => {
     e.preventDefault();
     if (!importText.trim()) return;
-    const success = importStateJson(importText.trim());
-    if (success) {
-      setImportStatus('State successfully restored!');
+    const ok = importStateJson(importText.trim());
+    if (ok) {
+      setImportStatus('SUCCESS: STATE RESTORED');
       setTimeout(() => {
         setImportStatus(null);
         setCurrentView('roadmap');
-      }, 1500);
+      }, 1000);
     } else {
-      setImportStatus('Invalid JSON state format.');
+      setImportStatus('ERROR: INVALID JSON');
     }
   };
 
-  const isLive = systemStatus?.mode === 'gemma_live';
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-950/60 backdrop-blur-sm overflow-y-auto animate-fadeIn">
-      <div className="bg-white border border-surface-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-elevated relative my-8 space-y-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-surface-100 text-charcoal-700 font-semibold">
-              Configuration & Persistence
-            </span>
-            <h2 className="editorial-title text-2xl font-normal text-charcoal-900">
-              System Settings & Privacy
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-surface-container-lowest border-[3px] border-[#000000] shadow-[10px_10px_0px_#000000] max-w-2xl w-full p-space-lg flex flex-col gap-space-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm">
+          <div className="flex items-center gap-space-sm">
+            <span className="material-symbols-outlined text-primary text-[22px]">tune</span>
+            <h2 className="font-headline-sm text-headline-sm uppercase text-on-surface m-0 font-bold">
+              SYSTEM CONFIGURATION & STATE BACKUP
             </h2>
           </div>
           <button
             onClick={() => setCurrentView('roadmap')}
-            className="p-1.5 rounded-full text-charcoal-400 hover:text-charcoal-800 hover:bg-surface-100"
+            className="w-8 h-8 flex items-center justify-center bg-surface-container-high border-[2px] border-[#000000] font-bold"
           >
-            <X className="w-5 h-5" />
+            ✕
           </button>
         </div>
 
-        {/* Inference Status Card */}
-        <div className="p-5 rounded-2xl bg-surface-50 border border-surface-200 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-charcoal-700 uppercase tracking-wide flex items-center space-x-1.5">
-              <Server className="w-4 h-4 text-emeraldAccent-600" />
-              <span>Inference Reasoning Engine</span>
+        <div className="flex flex-col gap-space-sm">
+          <div className="p-space-sm bg-surface-container-low border-[2px] border-[#000000]">
+            <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface block mb-1">
+              GEMMA 4 RUNTIME STATUS:
             </span>
-            <span
-              className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold ${
-                isLive
-                  ? 'bg-emeraldAccent-100 text-emeraldAccent-800'
-                  : 'bg-surface-200 text-charcoal-700'
-              }`}
-            >
-              {isLive ? 'Gemma 4 Live Inference' : 'High-Fidelity Simulation'}
-            </span>
-          </div>
-
-          <div className="text-xs text-charcoal-600 space-y-1">
-            <div className="flex justify-between font-mono text-[11px]">
-              <span className="text-charcoal-400">Active Model:</span>
-              <span className="font-semibold text-charcoal-800">{systemStatus?.activeModel || 'gemma-2-9b-it'}</span>
+            <div className="flex items-center justify-between font-label-code text-label-code">
+              <span>ENGINE MODE:</span>
+              <span className="font-bold text-tertiary">
+                {systemStatus?.mode ? systemStatus.mode.toUpperCase() : 'GEMMA_LIVE'}
+              </span>
             </div>
-            <div className="flex justify-between font-mono text-[11px]">
-              <span className="text-charcoal-400">Provider:</span>
-              <span className="font-semibold text-charcoal-800">{systemStatus?.provider || 'Google AI Studio / Builtin'}</span>
+            <div className="flex items-center justify-between font-label-code text-label-code">
+              <span>LATENCY SLA:</span>
+              <span className="font-bold text-primary">&lt; 50ms</span>
             </div>
           </div>
 
-          <p className="text-[11px] text-charcoal-500 leading-snug pt-1">
-            {systemStatus?.description || 'All core features (diagnostic assessment, roadmap generation, rubric evaluations) run deterministically without dependencies.'}
-          </p>
-        </div>
-
-        {/* Security & Secret Protection Guarantee */}
-        <div className="p-4 rounded-xl bg-emeraldAccent-50/50 border border-emeraldAccent-200 text-xs text-charcoal-700 space-y-1">
-          <div className="flex items-center space-x-1.5 font-semibold text-emeraldAccent-900">
-            <Shield className="w-4 h-4 text-emeraldAccent-700" />
-            <span>Strict Client-Server Isolation</span>
-          </div>
-          <p className="text-[11px] text-charcoal-600 leading-relaxed">
-            API secrets remain securely on the Node.js backend. No credentials, tokens, or private learner submissions are ever exposed in browser bundles, Git history, or client network requests.
-          </p>
-        </div>
-
-        {/* State Persistence: Export & Import */}
-        <div className="space-y-3">
-          <h3 className="text-xs font-bold text-charcoal-900 uppercase tracking-wide">
-            Persistence & Portability
-          </h3>
-
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-space-xs">
+            <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+              EXPORT LEARNER JOURNEY:
+            </span>
             <button
               onClick={exportStateJson}
-              className="flex-1 inline-flex items-center justify-center space-x-2 p-3 rounded-xl border border-surface-300 bg-white hover:bg-surface-100 text-charcoal-800 text-xs font-semibold shadow-subtle transition-all"
+              className="py-space-xs px-space-md bg-surface-container-high hover:bg-surface-container border-[2px] border-[#000000] font-title uppercase font-bold shadow-[2px_2px_0px_#000000]"
             >
-              <Download className="w-4 h-4 text-emeraldAccent-600" />
-              <span>Export Full State (JSON)</span>
+              DOWNLOAD STATE BACKUP (.JSON)
             </button>
           </div>
 
-          {/* Import JSON input */}
-          <form onSubmit={handleImport} className="space-y-2 pt-2">
-            <label className="block text-[11px] font-mono text-charcoal-500">
-              Restore State from JSON:
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={importText}
-                onChange={(e) => setImportText(e.target.value)}
-                placeholder="Paste exported JSON string here..."
-                className="flex-1 p-2.5 rounded-xl border border-surface-300 text-xs font-mono focus:outline-none focus:border-emeraldAccent-500"
-              />
+          <form onSubmit={handleImport} className="flex flex-col gap-space-xs pt-space-xs border-t border-[#000000]">
+            <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
+              RESTORE STATE FROM JSON:
+            </span>
+            <textarea
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              rows={4}
+              placeholder="Paste JSON state here..."
+              className="w-full bg-surface-container-lowest border-[2px] border-[#000000] p-space-sm font-label-code text-label-code"
+            />
+            <div className="flex items-center justify-between mt-1">
+              {importStatus && (
+                <span className="font-label-mono text-label-mono font-bold text-primary">
+                  {importStatus}
+                </span>
+              )}
               <button
                 type="submit"
-                className="px-4 py-2.5 rounded-xl bg-charcoal-900 hover:bg-charcoal-800 text-surface-50 text-xs font-semibold shadow-sm transition-all"
+                className="ml-auto py-space-xs px-space-md bg-primary-container text-on-primary-container border-[2px] border-[#000000] font-title uppercase font-bold shadow-[2px_2px_0px_#000000]"
               >
-                Restore
+                RESTORE JOURNEY
               </button>
             </div>
-            {importStatus && (
-              <div className="text-[11px] font-mono text-emeraldAccent-700 font-semibold">
-                {importStatus}
-              </div>
-            )}
           </form>
-        </div>
 
-        {/* Destructive Reset */}
-        <div className="pt-4 border-t border-surface-200 flex items-center justify-between">
-          <div>
-            <div className="text-xs font-semibold text-rose-800">Clear Workspace Data</div>
-            <div className="text-[10px] text-charcoal-500">Resets goals, assessments, and roadmap history.</div>
-          </div>
-
-          {!resetConfirm ? (
+          <div className="flex items-center justify-between pt-space-sm border-t-[2px] border-[#000000]">
             <button
-              onClick={() => setResetConfirm(true)}
-              className="px-3.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-colors"
+              onClick={resetAllData}
+              className="px-space-md py-space-xs bg-error-container text-on-error-container border-[2px] border-[#000000] font-label-mono uppercase font-bold"
             >
-              Reset Data
+              PURGE LOCAL DATA
             </button>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={resetAllData}
-                className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm"
-              >
-                Confirm Reset
-              </button>
-              <button
-                onClick={() => setResetConfirm(false)}
-                className="px-2 py-1.5 text-xs text-charcoal-500 hover:text-charcoal-700"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
+
+            <button
+              onClick={() => setCurrentView('roadmap')}
+              className="px-space-lg py-space-xs bg-surface-container-high border-[2px] border-[#000000] font-title uppercase font-bold"
+            >
+              CLOSE
+            </button>
+          </div>
         </div>
       </div>
     </div>

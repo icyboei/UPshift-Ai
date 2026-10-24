@@ -18,11 +18,16 @@ interface GemmaServiceConfig {
 }
 
 export class GemmaService {
-  private config: GemmaServiceConfig;
+  private getConfig(): GemmaServiceConfig {
+    const rawKey = process.env.GEMMA_API_KEY?.trim() || undefined;
+    const hasValidKey = Boolean(
+      rawKey &&
+      rawKey !== 'your_google_ai_studio_or_gemma_api_key_here' &&
+      rawKey.length > 5
+    );
 
-  constructor() {
-    this.config = {
-      apiKey: process.env.GEMMA_API_KEY?.trim() || undefined,
+    return {
+      apiKey: hasValidKey ? rawKey : undefined,
       model: process.env.GEMMA_MODEL?.trim() || 'gemma-2-9b-it',
       provider: (process.env.GEMMA_PROVIDER as any) || 'google-ai-studio',
       customEndpoint: process.env.GEMMA_CUSTOM_ENDPOINT?.trim() || undefined,
@@ -36,14 +41,15 @@ export class GemmaService {
     provider: string;
     description: string;
   } {
-    const hasKey = Boolean(this.config.apiKey && this.config.apiKey !== 'your_google_ai_studio_or_gemma_api_key_here');
+    const config = this.getConfig();
+    const hasKey = Boolean(config.apiKey);
     return {
       mode: hasKey ? 'gemma_live' : 'simulation_engine',
-      activeModel: this.config.model,
+      activeModel: config.model,
       hasApiKey: hasKey,
-      provider: this.config.provider,
+      provider: config.provider,
       description: hasKey
-        ? `Live inference connected via ${this.config.provider} (${this.config.model})`
+        ? `Live inference connected via ${config.provider} (${config.model})`
         : 'Running in high-fidelity deterministic simulator mode. All calculations, prerequisite roadmaps, and evaluations are fully functional.',
     };
   }
@@ -55,7 +61,8 @@ export class GemmaService {
     prompt: string,
     simulatorFallback: () => T
   ): Promise<{ data: T; engine: EngineAttribution }> {
-    const hasKey = Boolean(this.config.apiKey && this.config.apiKey !== 'your_google_ai_studio_or_gemma_api_key_here');
+    const config = this.getConfig();
+    const hasKey = Boolean(config.apiKey);
 
     if (!hasKey) {
       return { data: simulatorFallback(), engine: 'simulation_engine' };
@@ -63,7 +70,7 @@ export class GemmaService {
 
     try {
       // Call Google AI Studio / Generative Language API for Gemma
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.config.model)}:generateContent?key=${this.config.apiKey}`;
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:generateContent?key=${config.apiKey}`;
       
       const payload = {
         contents: [

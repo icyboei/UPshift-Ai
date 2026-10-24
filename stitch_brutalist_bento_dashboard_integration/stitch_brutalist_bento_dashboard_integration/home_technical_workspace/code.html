@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;800;900&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-surface-variant":"#414751","background":"#fbf8fc","on-primary":"#ffffff","inverse-on-surface":"#f3f0f4","secondary-container":"#fe7676","surface-container-low":"#f6f2f7","on-error":"#ffffff","primary":"#0060ac","secondary-fixed-dim":"#ffb3b0","primary-fixed-dim":"#a4c9ff","on-secondary-fixed-variant":"#881d24","on-error-container":"#93000a","tertiary":"#006d36","error-container":"#ffdad6","surface-container-high":"#eae7eb","secondary":"#a83639","on-secondary-fixed":"#410006","primary-container":"#60a5fa","on-tertiary-fixed":"#00210c","on-surface":"#1b1b1e","on-secondary":"#ffffff","outline":"#717783","primary-fixed":"#d4e3ff","surface-bright":"#fbf8fc","on-primary-fixed":"#001c39","secondary-fixed":"#ffdad8","on-tertiary-fixed-variant":"#005227","inverse-surface":"#303033","tertiary-fixed-dim":"#4de082","on-secondary-container":"#720b17","tertiary-container":"#0eba61","outline-variant":"#c1c7d3","surface-container-highest":"#e4e1e6","on-background":"#1b1b1e","on-primary-container":"#003a6b","surface-tint":"#0060ac","on-tertiary-container":"#00421e","surface-variant":"#e4e1e6","on-primary-fixed-variant":"#004883","error":"#ba1a1a","surface-container-lowest":"#ffffff","surface-dim":"#dcd9dd","tertiary-fixed":"#6dfe9c","inverse-primary":"#a4c9ff","surface-container":"#f0edf1","on-tertiary":"#ffffff","surface":"#fbf8fc"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-xl":"2.5rem",gutter:"1.5rem",margin:"2rem","margin-mobile":"1rem","space-md":"1rem","space-lg":"1.5rem","space-xs":"0.25rem","gutter-mobile":"1rem","space-sm":"0.5rem"},fontFamily:{"label-mono":["Geist"],"body-md":["Geist"],"headline-md":["Chivo"],"body-sm":["Geist"],"headline-lg-mobile":["Chivo"],display:["Chivo"],"body-lg":["Geist"],"label-code":["Geist"],title:["Chivo"],"headline-lg":["Chivo"],"headline-sm":["Chivo"]},fontSize:{"label-mono":["11px",{lineHeight:"14px",letterSpacing:"0.08em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"400"}],"headline-md":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"400"}],"headline-lg-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"800"}],display:["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"900"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"400"}],"label-code":["13px",{lineHeight:"18px",letterSpacing:"0.02em",fontWeight:"500"}],title:["16px",{lineHeight:"24px",letterSpacing:"0.02em",fontWeight:"700"}],"headline-lg":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-sm":["20px",{lineHeight:"28px",letterSpacing:"0em",fontWeight:"700"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 bg-surface-container-lowest z-50 border-b-[3px] border-[#000000]"><div class="h-16 w-full px-gutter flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><div class="w-4 h-4 bg-primary-container border-[2px] border-[#000000]"></div><span class="font-title text-title uppercase tracking-wider text-on-surface">BENTO//CORE</span></div><div class="hidden xl:flex items-center gap-space-sm"><div class="flex items-center px-space-sm py-space-xs bg-tertiary-fixed border-[2px] border-[#000000]"><span class="font-label-mono text-label-mono text-on-tertiary-fixed font-bold uppercase">SYS.STATUS: 99.98%</span></div><div class="flex items-center px-space-sm py-space-xs bg-surface-container-high border-[2px] border-[#000000]"><span class="font-label-mono text-label-mono text-on-surface font-bold uppercase">LOC: US-EAST-01</span></div></div></div><nav class="hidden lg:flex items-center gap-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]"><a class="px-space-md py-space-xs font-title text-title uppercase tracking-wide text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="home-workspace" href="#">Workspace</a><a class="px-space-md py-space-xs font-title text-title uppercase tracking-wide text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="analytics-dashboard" href="#">Analytics</a><a class="px-space-md py-space-xs font-title text-title uppercase tracking-wide text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="system-details" href="#">System Specs</a><a class="px-space-md py-space-xs font-title text-title uppercase tracking-wide text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="contact-directory" href="#">Contact</a></nav><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center px-space-sm py-space-xs bg-surface-container-lowest border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]"><span class="font-label-mono text-label-mono text-on-surface-variant uppercase">LATENCY: 12ms</span></div><div class="flex items-center gap-space-sm"><a class="px-space-sm py-space-xs bg-surface-container-high border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface hover:bg-surface-container transition-colors shadow-[2px_2px_0px_#000000]" data-path="auth-access" href="#">Auth [Sign In]</a><button aria-label="Notifications" class="w-8 h-8 flex items-center justify-center bg-surface-container-lowest border-[2px] border-[#000000] hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[18px] text-on-surface">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-[2px] border-[#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low border-r-[3px] border-[#000000] z-40 flex flex-col justify-between p-space-md"><div class="flex flex-col gap-space-md"><div class="px-space-sm py-space-xs bg-surface-container border-[2px] border-[#000000]"><span class="font-label-mono text-label-mono uppercase tracking-wider text-on-surface-variant block">NODE CLUSTERS</span><span class="font-headline-sm text-headline-sm uppercase text-on-surface">08 ACTIVE</span></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-bold border-[2px] border-[#000000] shadow-[3px_3px_0px_#000000]"><a class="px-space-sm py-space-xs font-title text-title uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="home-workspace" href="#">Home / Workspace</a><a class="px-space-sm py-space-xs font-title text-title uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="analytics-dashboard" href="#">Analytics Dashboard</a><a class="px-space-sm py-space-xs font-title text-title uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="system-details" href="#">System Specs &amp; Docs</a><a class="px-space-sm py-space-xs font-title text-title uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="contact-directory" href="#">Contact Directory</a></nav></div><div class="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] shadow-[4px_4px_0px_#000000]"><div class="flex items-center justify-between mb-space-xs"><span class="font-label-mono text-label-mono uppercase text-on-surface-variant">CPU UTIL</span><span class="font-label-mono text-label-mono font-bold text-tertiary">42.1%</span></div><div class="w-full h-2 bg-surface-container-high border-[1px] border-[#000000]"><div class="h-full bg-primary-container w-[42%]"></div></div></div></aside><div class="pl-64"><main class="w-full min-h-screen pt-16 bg-background px-gutter py-space-lg"><div class="flex flex-col w-full">
+<!-- System Status Strip & Technical Sub-Header -->
+<div class="w-full bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md mb-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-sm py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono uppercase border-[2px] border-[#000000]">ZONE: US-EAST-01A</span>
+<span class="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">KERNEL v6.12.9-rt</span>
+<span class="px-space-sm py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono uppercase border-[2px] border-[#000000]">DAEMON RUNNING</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface uppercase tracking-tight m-0">WORKSPACE OVERVIEW // NODE CLUSTER ALPHA</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl m-0">Primary runtime plane running orchestrator telemetry, continuous ingress verification, and isolated high-throughput edge worker queues.</p>
+</div>
+<div class="flex flex-wrap md:flex-col lg:flex-row items-stretch gap-space-sm self-start md:self-auto shrink-0">
+<div class="px-space-md py-space-xs bg-tertiary-fixed text-on-tertiary-fixed border-[2px] border-[#000000] flex flex-col justify-center">
+<span class="font-label-mono text-label-mono uppercase">SYS.STATUS</span>
+<span class="font-headline-sm text-headline-sm uppercase font-bold text-tertiary">99.98%</span>
+</div>
+<div class="px-space-md py-space-xs bg-surface-container-low border-[2px] border-[#000000] flex flex-col justify-center">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">ACTIVE AGENTS</span>
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">142</span>
+</div>
+<div class="px-space-md py-space-xs bg-primary-fixed text-on-primary-fixed border-[2px] border-[#000000] flex flex-col justify-center">
+<span class="font-label-mono text-label-mono uppercase">HEARTBEAT</span>
+<span class="font-headline-sm text-headline-sm uppercase text-primary">0.84s</span>
+</div>
+</div>
+</div>
+<!-- Bento Core Grid -->
+<div class="grid grid-cols-12 gap-space-lg mb-space-lg">
+<!-- Box 1: Quick Deploy / Pipeline Dispatch (Span 7) -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between relative overflow-hidden">
+<!-- Dot grid decorative accent -->
+<div class="absolute -right-12 -top-12 w-48 h-48 opacity-15 pointer-events-none" style="background-image: radial-gradient(#000000 2px, transparent 2px); background-size: 10px 10px;"></div>
+<div class="flex flex-col gap-space-sm mb-space-lg">
+<div class="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 bg-primary border-[1.5px] border-[#000000]"></span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">PIPELINE.EXEC // DISPATCH CONTROL</span>
+</div>
+<span class="font-label-mono text-label-mono bg-surface-container-highest px-space-xs py-0.5 border-[1px] border-[#000000] uppercase text-on-surface">REV: #9042-B</span>
+</div>
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md pt-space-xs">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase m-0">FAST PIPELINE RUNNER</h2>
+<p class="font-body-md text-body-md text-on-surface-variant m-0">Synchronize staged branch with production gateway nodes across dual-zone edge routers.</p>
+</div>
+<button class="px-space-lg py-space-sm bg-primary-container text-on-primary-container font-title text-title uppercase tracking-wider border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center gap-space-sm shrink-0" id="deployTriggerBtn">
+<span class="material-symbols-outlined text-[20px]">rocket_launch</span>
+            TRIGGER DEPLOY
+          </button>
+</div>
+</div>
+<!-- Telemetry Subgrid & Interactive Log Preview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm pt-space-sm border-t-[2px] border-[#000000]">
+<div class="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase block">P99 LATENCY</span>
+<span class="font-title text-title text-on-surface font-black">11.4ms</span>
+<span class="font-label-mono text-label-mono text-tertiary block font-bold">▲ 0.4% NOMINAL</span>
+</div>
+<div class="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase block">BUFFER OCCUPANCY</span>
+<span class="font-title text-title text-on-surface font-black">2.18 GB / 8 GB</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant block">HEADROOM: 72%</span>
+</div>
+<div class="bg-surface-container-low p-space-sm border-[2px] border-[#000000]">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase block">LAST COMPILATION</span>
+<span class="font-title text-title text-on-surface font-black">00:03:19 AGO</span>
+<span class="font-label-mono text-label-mono text-primary block font-bold">ZERO FAULTS</span>
+</div>
+</div>
+<!-- Live Terminal Simulation Output -->
+<div class="mt-space-md p-space-sm bg-inverse-surface text-inverse-on-surface border-[2px] border-[#000000] font-label-code text-label-code">
+<div class="flex items-center justify-between text-surface-variant border-b border-surface-variant/30 pb-space-xs mb-space-xs font-label-mono">
+<span>STREAM: stdio/cluster-daemon</span>
+<span class="inline-block w-2 h-2 bg-tertiary-fixed rounded-full" id="termPulse"></span>
+</div>
+<div class="flex flex-col gap-1 text-surface-container-highest" id="terminalStream">
+<div>[14:22:01.109] <span class="text-tertiary-fixed">READY:</span> Initialized transport link to worker mesh (142 nodes responded)</div>
+<div>[14:22:04.882] <span class="text-primary-container">PROBE:</span> US-EAST-01 ingress baseline verified. SSL cert expires in 68 days.</div>
+</div>
+</div>
+</div>
+<!-- Box 2: Live Cluster Health Summary (Span 5) -->
+<div class="col-span-12 lg:col-span-5 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-tertiary">monitor_heart</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">CLUSTER SYNOPTIC // HEALTH MATRIX</span>
+</div>
+<a class="font-label-mono text-label-mono text-primary font-bold hover:underline uppercase flex items-center gap-1" href="#">
+            OPEN ANALYTICS
+            <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+<div class="flex items-baseline justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">TOTAL AGGREGATE LOAD</span>
+<span class="font-headline-sm text-headline-sm uppercase text-tertiary">STABLE 48.2%</span>
+</div>
+<!-- Brutalist Stepped SVG Load Chart -->
+<div class="w-full bg-surface-container-low border-[2px] border-[#000000] p-space-sm mb-space-md">
+<div class="flex justify-between items-center text-on-surface-variant font-label-mono text-label-mono mb-2">
+<span>CORE LOAD (PREV 12 HR)</span>
+<span>MAX PEAK: 68.4%</span>
+</div>
+<svg class="w-full h-16 text-primary overflow-visible" preserveaspectratio="none" viewbox="0 0 300 70">
+<!-- Grid lines -->
+<line opacity="0.3" stroke="#000000" stroke-dasharray="2 2" stroke-width="1" x1="0" x2="300" y1="18" y2="18"></line>
+<line opacity="0.3" stroke="#000000" stroke-dasharray="2 2" stroke-width="1" x1="0" x2="300" y1="42" y2="42"></line>
+<!-- Stepped bar line -->
+<polyline fill="none" points="0,52 30,52 30,44 60,44 60,35 90,35 90,48 120,48 120,28 150,28 150,38 180,38 180,24 210,24 210,40 240,40 240,32 270,32 270,42 300,42" stroke="#000000" stroke-width="3"></polyline>
+<polygon fill="#60a5fa" fill-opacity="0.35" points="0,52 30,52 30,44 60,44 60,35 90,35 90,48 120,48 120,28 150,28 150,38 180,38 180,24 210,24 210,40 240,40 240,32 270,32 270,42 300,42 300,70 0,70"></polygon>
+</svg>
+</div>
+<!-- Health Vectors -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+<span class="font-label-mono text-label-mono uppercase text-on-surface">MEMORY POOL ALPHA</span>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-mono text-label-mono text-on-surface">18.4 / 32 GB</span>
+<span class="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">OPTIMAL</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+<span class="font-label-mono text-label-mono uppercase text-on-surface">CONTAINER SWARM</span>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-mono text-label-mono text-on-surface">88 / 88 PODS</span>
+<span class="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">HEALTHY</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-xs bg-surface-container border-[1.5px] border-[#000000]">
+<span class="font-label-mono text-label-mono uppercase text-on-surface">INGRESS PACKET LOSS</span>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-mono text-label-mono text-on-surface">0.0001%</span>
+<span class="px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono border-[1px] border-[#000000] uppercase font-bold">NOMINAL</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">AUTOMATED DIAGNOSTICS: ACTIVE</span>
+<button class="px-space-sm py-1 bg-surface-container-high hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]">
+          RUN RECHECK
+        </button>
+</div>
+</div>
+<!-- Box 3: Active Services Architecture (Span 6) -->
+<div class="col-span-12 lg:col-span-6 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">dns</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">TOPOLOGY // ACTIVE SERVICES</span>
+</div>
+<span class="font-label-mono text-label-mono px-space-xs bg-surface-container-high border-[1px] border-[#000000] uppercase">6/6 ONLINE</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Item 1 -->
+<div class="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-title text-title">01</div>
+<div>
+<div class="font-title text-title uppercase text-on-surface">DATABASE REPLICAS (POSTGRESQL)</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">PRIMARY + 3 READ NODES // SHARDING ENABLED</div>
+</div>
+</div>
+<span class="px-space-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-bold uppercase border-[1.5px] border-[#000000]">NORMAL</span>
+</div>
+<!-- Item 2 -->
+<div class="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-title text-title">02</div>
+<div>
+<div class="font-title text-title uppercase text-on-surface">VALKEY CACHE CLUSTER</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">6 NODES // HIT RATIO: 94.2%</div>
+</div>
+</div>
+<span class="px-space-sm py-1 bg-primary-container text-on-primary-container font-label-mono text-label-mono font-bold uppercase border-[1.5px] border-[#000000]">ACTIVE</span>
+</div>
+<!-- Item 3 -->
+<div class="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-title text-title">03</div>
+<div>
+<div class="font-title text-title uppercase text-on-surface">KONG API GATEWAY EDGE</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">INGRESS ROUTING // REPLAY VERIFICATION</div>
+</div>
+</div>
+<span class="px-space-sm py-1 bg-secondary-fixed text-on-secondary-fixed-variant font-label-mono text-label-mono font-bold uppercase border-[1.5px] border-[#000000]">SYNCING</span>
+</div>
+<!-- Item 4 -->
+<div class="p-space-sm bg-surface-container-low border-[2px] border-[#000000] flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container-high border-[2px] border-[#000000] flex items-center justify-center font-title text-title">04</div>
+<div>
+<div class="font-title text-title uppercase text-on-surface">VECTOR EMBEDDING INDEX</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">HNSW INDEX // 1.2M DIMENSIONS LOADED</div>
+</div>
+</div>
+<span class="px-space-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-bold uppercase border-[1.5px] border-[#000000]">NORMAL</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">CONFIGURATION SYNCHRONIZED</span>
+<button class="px-space-sm py-1 bg-surface-container-lowest hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]">
+          EDIT SCHEMAS
+        </button>
+</div>
+</div>
+<!-- Box 4: Recent Telemetry Alerts & Updates (Span 6) -->
+<div class="col-span-12 lg:col-span-6 bg-surface-container-lowest border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b-[3px] border-[#000000] pb-space-sm mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">notifications_active</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-wider">LIVE AUDIT // TELEMETRY FEED</span>
+</div>
+<span class="font-label-mono text-label-mono px-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-bold border-[1px] border-[#000000] uppercase">LISTENING</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<!-- Alert 1 -->
+<div class="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="px-space-xs py-0.5 bg-secondary-container text-on-secondary-container font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">WARN</span>
+<div>
+<div class="font-title text-title uppercase text-on-surface">ZONE US-EAST-01C PEER FLAP</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">BGP path converged after 400ms route dampening. Automatic failover passed.</div>
+</div>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">14:18:22</span>
+</div>
+<!-- Alert 2 -->
+<div class="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="px-space-xs py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">INFO</span>
+<div>
+<div class="font-title text-title uppercase text-on-surface">AUTOSCALER INGRESS AGENTS UP</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Worker pool resized from 138 to 142 instances based on message queue ceiling.</div>
+</div>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">14:02:11</span>
+</div>
+<!-- Alert 3 -->
+<div class="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="px-space-xs py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">PASS</span>
+<div>
+<div class="font-title text-title uppercase text-on-surface">SECURITY AUDIT SIGNATURE VALIDATED</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Mutual TLS rotation completed for internal bus without packet droppage.</div>
+</div>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">13:45:00</span>
+</div>
+<!-- Alert 4 -->
+<div class="p-space-sm bg-surface-container-lowest border-[2px] border-[#000000] flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="px-space-xs py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono font-black border-[1.5px] border-[#000000] shrink-0">NOTE</span>
+<div>
+<div class="font-title text-title uppercase text-on-surface">STORAGE BACKUP TAR CREATED</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Daily snapshot delta uploaded to multi-region cold store bucket.</div>
+</div>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap shrink-0">12:30:19</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm border-t-[2px] border-[#000000] flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">FILTER: ALL SEVERITIES</span>
+<button class="px-space-sm py-1 bg-surface-container-high hover:bg-surface-container border-[2px] border-[#000000] font-label-mono text-label-mono uppercase font-bold text-on-surface shadow-[2px_2px_0px_#000000]">
+          EXPORT LOG (.CSV)
+        </button>
+</div>
+</div>
+<!-- Box 5: Platform Navigation Shortcuts & System Directory (Span 12) -->
+<div class="col-span-12 bg-surface-container-high border-[3px] border-[#000000] shadow-[6px_6px_0px_#000000] p-space-md">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-mono text-label-mono text-on-surface uppercase tracking-wider font-bold">DIRECTORY DISPATCH // CORE INTERFACES</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">PRESS SHORTCUT KEY [1-3]</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Quick Link 1 -->
+<a class="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between" href="#">
+<div class="flex items-start justify-between mb-space-sm">
+<span class="w-8 h-8 bg-primary-container text-on-primary-container border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">01</span>
+<span class="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">query_stats</span>
+</div>
+<div>
+<h3 class="font-title text-title uppercase text-on-surface m-0 mb-1">ANALYTICS DASHBOARD</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0">Inspect throughput heatmaps, packet inspection histograms, and latency percentiles.</p>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-primary font-label-mono text-label-mono uppercase font-bold">
+<span>ROUTE: /analytics</span>
+<span>ENTER →</span>
+</div>
+</a>
+<!-- Quick Link 2 -->
+<a class="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between" href="#">
+<div class="flex items-start justify-between mb-space-sm">
+<span class="w-8 h-8 bg-tertiary-fixed text-on-tertiary-fixed border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">02</span>
+<span class="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">terminal</span>
+</div>
+<div>
+<h3 class="font-title text-title uppercase text-on-surface m-0 mb-1">SYSTEM SPECS &amp; DOCS</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0">Orchestrator APIs, hardware manifests, memory bus protocols, and architecture blueprints.</p>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-tertiary font-label-mono text-label-mono uppercase font-bold">
+<span>ROUTE: /specs</span>
+<span>ENTER →</span>
+</div>
+</a>
+<!-- Quick Link 3 -->
+<a class="group p-space-md bg-surface-container-lowest border-[3px] border-[#000000] shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] transition-all flex flex-col justify-between" href="#">
+<div class="flex items-start justify-between mb-space-sm">
+<span class="w-8 h-8 bg-secondary-fixed text-on-secondary-fixed-variant border-[2px] border-[#000000] flex items-center justify-center font-title text-title font-bold">03</span>
+<span class="material-symbols-outlined text-[24px] text-on-surface group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">contact_support</span>
+</div>
+<div>
+<h3 class="font-title text-title uppercase text-on-surface m-0 mb-1">TECHNICAL DIRECTORY</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0">On-call escalation roster, SRE engineers, security operations center, and escalation matrix.</p>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-[1px] border-[#000000] flex items-center justify-between text-secondary font-label-mono text-label-mono uppercase font-bold">
+<span>ROUTE: /directory</span>
+<span>ENTER →</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Interactive Terminal & Trigger Logic -->
+<script>
+    (function () {
+      const deployBtn = document.getElementById('deployTriggerBtn');
+      const terminal = document.getElementById('terminalStream');
+      const pulse = document.getElementById('termPulse');
+
+      if (deployBtn && terminal) {
+        deployBtn.addEventListener('click', function () {
+          const now = new Date();
+          const timestamp = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+          
+          const newEntry = document.createElement('div');
+          newEntry.innerHTML = `[${timestamp}] <span class="text-tertiary-fixed font-bold">DISPATCH:</span> Manual pipeline triggered by operator (USER_ADMIN)`;
+          terminal.appendChild(newEntry);
+          
+          if (terminal.children.length > 5) {
+            terminal.removeChild(terminal.firstElementChild);
+          }
+
+          if (pulse) {
+            pulse.classList.remove('bg-tertiary-fixed');
+            pulse.classList.add('bg-primary-container');
+            setTimeout(() => {
+              pulse.classList.remove('bg-primary-container');
+              pulse.classList.add('bg-tertiary-fixed');
+            }, 800);
+          }
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>

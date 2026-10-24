@@ -3,43 +3,60 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    color-scheme: light;
+  html, body {
+    margin: 0;
+    padding: 0;
   }
-
   body {
-    background-color: #FAF9F6;
-    color: #16191D;
+    background-color: #fbf8fc;
+    color: #1b1b1e;
+    font-family: 'Geist', sans-serif;
+    overscroll-behavior: none;
   }
 }
 
-/* Custom editorial aesthetics and subtle scrollbars */
+/* Neo-Brutalist utilities & decorative dots/hatches */
+.dot-pattern-subtle {
+  background-image: radial-gradient(#000000 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+.dot-pattern-dense {
+  background-image: radial-gradient(#000000 2px, transparent 2px);
+  background-size: 10px 10px;
+}
+
+.hatch-pattern {
+  background: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 0, transparent 8px);
+}
+
+.tactile-btn {
+  transition: all 0.15s ease-out;
+}
+.tactile-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+.tactile-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none !important;
+}
+
+/* Custom crisp technical scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF9F6;
+  background: #f0edf1;
+  border-left: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C7C1B5;
-  border-radius: 3px;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8C97A5;
-}
-
-.editorial-title {
-  font-family: 'Newsreader', Georgia, serif;
-  letter-spacing: -0.02em;
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(223, 218, 208, 0.8);
+  background: #0060ac;
 }

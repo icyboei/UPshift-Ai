@@ -1,3 +1,4 @@
+import fs from 'fs';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -5,7 +6,18 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './routes/api.js';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const currentDir = process.cwd();
+dotenv.config({ path: path.resolve(currentDir, '.env') });
+dotenv.config({ path: path.resolve(currentDir, '../.env') });
+dotenv.config({ path: path.resolve(currentDir, 'server/.env') });
+// Fallback if user edited .env.example
+if (!process.env.GEMMA_API_KEY || process.env.GEMMA_API_KEY.includes('your_google_ai_studio')) {
+  dotenv.config({ path: path.resolve(currentDir, '.env.example') });
+  dotenv.config({ path: path.resolve(currentDir, '../.env.example') });
+}
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
@@ -39,6 +51,26 @@ app.use('/api', apiRouter);
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'upshift-ai-server', timestamp: new Date().toISOString() });
 });
+
+// Serve static client bundle in production
+const clientDistCandidates = [
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(__dirname, '../client/dist'),
+  path.resolve(currentDir, 'client/dist'),
+  path.resolve(currentDir, '../client/dist'),
+  path.resolve(currentDir, '../../client/dist'),
+];
+const foundDist = clientDistCandidates.find((d) => fs.existsSync(d));
+if (foundDist) {
+  console.log(`[PROD] Serving static client build from: ${foundDist}`);
+  app.use(express.static(foundDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(foundDist, 'index.html'));
+  });
+}
 
 // Start server
 app.listen(PORT, () => {
