@@ -148,3 +148,24 @@ apiRouter.post('/gemma/maintenance-schedule', (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: err.message || 'Internal server error' });
   }
 });
+
+// POST /api/gemma/adapt-roadmap
+const AdaptRoadmapSchema = z.object({
+  roadmap: z.any(),
+  evaluations: z.array(z.any()),
+});
+
+apiRouter.post('/gemma/adapt-roadmap', async (req: Request, res: Response) => {
+  try {
+    const { roadmap, evaluations } = AdaptRoadmapSchema.parse(req.body);
+    const result = await gemmaService.adaptRoadmap(roadmap, evaluations);
+    res.json({ success: true, data: result });
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json({ success: false, error: err.errors[0]?.message || 'Validation error' });
+      return;
+    }
+    console.error('[API] /adapt-roadmap error:', err);
+    res.status(500).json({ success: false, error: err.message || 'Internal server error' });
+  }
+});

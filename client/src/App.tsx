@@ -47,11 +47,11 @@ export const AppContent: React.FC = () => {
               <span>//</span>
               <span>EVIDENCE-DRIVEN ADAPTIVE ENGINE</span>
               <span>//</span>
-              <span className="text-tertiary font-bold uppercase">GEMMA 4 RUNNING</span>
+              <span className="text-tertiary font-bold uppercase">GEMMA 2 POWERED</span>
             </div>
 
             <div className="flex items-center gap-space-md uppercase">
-              <span>LATENCY: 12ms</span>
+              <span>LATENCY: &lt; 25MS</span>
               <span>RETENTION: 94.2%</span>
               <span>STATUS: NOMINAL</span>
             </div>

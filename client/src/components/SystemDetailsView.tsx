@@ -34,12 +34,12 @@ export const SystemDetailsView: React.FC = () => {
           <div className="flex items-center gap-space-xs">
             <span className="inline-block w-3 h-3 bg-primary-container border border-[#000000]"></span>
             <span className="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant font-bold">
-              LEARNING FRAMEWORK // GEMMA 4 REASONING
+              LEARNING FRAMEWORK // GEMMA 2 REASONING
             </span>
           </div>
           <div className="flex items-center gap-space-sm">
             <span className="px-space-sm py-space-xs bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-bold uppercase border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]">
-              MODEL: GEMMA 4
+              MODEL: GEMMA 2
             </span>
             <span className="px-space-sm py-space-xs bg-surface-container-highest text-on-surface font-label-mono text-label-mono font-bold uppercase border-[2px] border-[#000000]">
               PWA: OFFLINE-READY
@@ -108,7 +108,7 @@ export const SystemDetailsView: React.FC = () => {
               HACKTOBERFEST PWA
             </span>
             <span className="px-space-xs py-[1px] bg-primary-fixed border-[1px] border-[#000000] font-label-mono text-label-mono font-bold uppercase text-on-primary-fixed">
-              GEMMA 4 RUNNING
+              GEMMA 2 ACTIVE
             </span>
           </div>
         </div>
@@ -139,7 +139,7 @@ export const SystemDetailsView: React.FC = () => {
                     PRIMARY REASONING MODEL
                   </span>
                   <span className="font-headline-sm text-headline-sm text-on-surface uppercase">
-                    GEMMA 4 (MULTIMODAL)
+                    GEMMA 2 (9B / 27B INSTRUCTION-TUNED)
                   </span>
                   <div className="mt-space-sm flex items-center gap-space-xs text-tertiary">
                     <span className="material-symbols-outlined text-[14px]">check_circle</span>
@@ -154,7 +154,7 @@ export const SystemDetailsView: React.FC = () => {
                     ON-DEVICE RUNTIME
                   </span>
                   <span className="font-headline-sm text-headline-sm text-on-surface uppercase">
-                    GEMMA 4 E2B / E4B
+                    GEMMA 2 / DETERMINISTIC ENGINE
                   </span>
                   <div className="mt-space-sm flex items-center gap-space-xs text-on-surface-variant">
                     <span className="font-label-mono text-label-mono uppercase">

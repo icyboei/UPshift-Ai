@@ -112,4 +112,18 @@ export const apiClient = {
     if (!json.success) throw new Error(json.error || 'Failed to load maintenance schedule');
     return json.data;
   },
+
+  async adaptRoadmap(
+    roadmap: Roadmap,
+    evaluations: any[]
+  ): Promise<{ roadmap: Roadmap; adaptationSummary: string; engineUsed: string }> {
+    const res = await fetch('/api/gemma/adapt-roadmap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roadmap, evaluations }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Failed to adapt roadmap');
+    return json.data;
+  },
 };

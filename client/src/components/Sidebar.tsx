@@ -20,7 +20,7 @@ export const Sidebar: React.FC = () => {
             ACTIVE GOALS
           </span>
           <span className="font-headline-sm text-headline-sm uppercase text-on-surface font-bold">
-            03 IN FLIGHT
+            {roadmap ? '01 IN FLIGHT' : '00 IN FLIGHT'}
           </span>
         </div>
 

@@ -326,6 +326,19 @@ export const AssessmentStudio: React.FC = () => {
                         <p className="font-body-md text-body-md leading-relaxed text-on-tertiary-fixed-variant m-0">
                           {m.verificationBox.description}
                         </p>
+                        <div className="mt-3 pt-2 border-t border-black flex items-center justify-between">
+                          <span className="font-label-mono text-[10px] uppercase font-bold">
+                            DIAGNOSTIC EVIDENCE RECORDED
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setCurrentView('assessment_results')}
+                            className="px-2.5 py-1 bg-surface-container-lowest text-on-surface border-[2px] border-black font-label-mono text-xs uppercase font-bold shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1"
+                          >
+                            <span>VIEW GAP ANALYSIS & ROADMAP</span>
+                            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

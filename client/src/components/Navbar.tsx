@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
           <div className="hidden xl:flex items-center gap-space-sm">
             <div className="flex items-center px-space-sm py-space-xs bg-tertiary-fixed border-[2px] border-[#000000] shadow-[1px_1px_0px_#000000]">
               <span className="font-label-mono text-label-mono text-on-tertiary-fixed font-bold uppercase">
-                {isLiveGemma ? 'GEMMA 4: ACTIVE' : 'GEMMA 4: HIGH-FIDELITY'}
+                {isLiveGemma ? 'GEMMA 2: LIVE' : 'GEMMA 2: SIMULATOR'}
               </span>
             </div>
             <div className="flex items-center px-space-sm py-space-xs bg-surface-container-high border-[2px] border-[#000000]">
@@ -116,7 +116,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-space-md">
           <div className="hidden md:flex items-center px-space-sm py-space-xs bg-surface-container-lowest border-[2px] border-[#000000] shadow-[2px_2px_0px_#000000]">
             <span className="font-label-mono text-label-mono text-on-surface-variant uppercase">
-              LATENCY: 12ms
+              {systemStatus?.hasApiKey ? 'API: CONNECTED' : 'ENGINE: DETERMINISTIC'}
             </span>
           </div>
 

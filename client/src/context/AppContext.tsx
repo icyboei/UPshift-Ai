@@ -55,6 +55,7 @@ interface AppContextType {
   refreshMaintenancePlan: () => Promise<void>;
   loadSeedDemo: () => void;
   resetAllData: () => void;
+  adaptRoadmapStrategy: () => Promise<void>;
   exportStateJson: () => void;
   importStateJson: (jsonString: string) => boolean;
   refreshSystemStatus: () => Promise<void>;
@@ -669,6 +670,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCurrentView('landing');
   };
 
+  const adaptRoadmapStrategy = async () => {
+    if (!roadmap) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await apiClient.adaptRoadmap(roadmap, evaluationsHistory);
+      setRoadmap(res.roadmap);
+    } catch (err: any) {
+      setError(err.message || 'Failed to adapt roadmap strategy');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const exportStateJson = () => {
     const data = {
       exportTimestamp: new Date().toISOString(),
@@ -740,6 +755,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         refreshMaintenancePlan,
         loadSeedDemo,
         resetAllData,
+        adaptRoadmapStrategy,
         exportStateJson,
         importStateJson,
         refreshSystemStatus,
