@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "UPSHIFT AI — Adaptive Personal Development Platform Powered by Gemma 4",
   "private": true,
+  "type": "module",
   "scripts": {
+    "dev": "node scripts/dev.js",
+    "start": "node scripts/dev.js",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build:client": "npm --prefix client run build",

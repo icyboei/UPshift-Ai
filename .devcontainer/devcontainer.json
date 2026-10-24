@@ -1,0 +1,28 @@
+{
+  "name": "UPSHIFT AI Codespace",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "forwardPorts": [5173, 3001],
+  "portsAttributes": {
+    "5173": {
+      "label": "UPSHIFT AI Client",
+      "onAutoForward": "openBrowser"
+    },
+    "3001": {
+      "label": "UPSHIFT AI Backend API",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "npm --prefix client install && npm --prefix server install"
+}
