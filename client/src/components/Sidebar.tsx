@@ -48,7 +48,9 @@ export const Sidebar: React.FC = () => {
           >
             <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
             <span className="font-title text-title">CHAT & ASSESSMENT</span>
-          </button>\n\n          <button
+          </button>
+
+          <button
             onClick={() => setCurrentView('analytics')}
             className={`flex items-center gap-space-sm px-space-sm py-space-xs transition-all text-left uppercase tracking-wider ${
               currentView === 'analytics'

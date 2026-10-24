@@ -64,7 +64,9 @@ export const Navbar: React.FC = () => {
             }`}
           >
             CHAT & ASSESSMENT
-          </button>\n\n          <button
+          </button>
+
+          <button
             onClick={() => setCurrentView('analytics')}
             className={`px-space-md py-space-xs font-title text-title uppercase tracking-wide transition-all ${
               currentView === 'analytics'
