@@ -145,10 +145,10 @@ export const RoadmapView: React.FC = () => {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md pt-space-xs">
               <div>
                 <h2 className="font-headline-md text-headline-md text-on-surface uppercase m-0 leading-tight">
-                  {activeTask?.title || 'OPTIMIZE EMBEDDING RETRIEVAL LATENCY'}
+                  {activeTask?.title || 'TRACE ASYNCHRONOUS EVENT LOOP EXECUTION ORDER'}
                 </h2>
                 <p className="font-body-md text-body-md text-on-surface-variant m-0 mt-1">
-                  {activeTask?.objective || 'Complete a hands-on benchmark comparing HNSW index vs IVFFlat on 1M vectors. Submit benchmark code as evidence.'}
+                  {activeTask?.objective || 'Predict and verify microtask and macrotask scheduling in real-world scenarios. Submit executable reproduction script as evidence.'}
                 </p>
               </div>
 

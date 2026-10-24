@@ -2,297 +2,170 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
 export const LandingView: React.FC = () => {
-  const { setCurrentView, startNewGoal, loadSeedDemo, isLoading } = useApp();
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
-  const [learnerId, setLearnerId] = useState('learner@domain.edu');
-  const [targetAmbition, setTargetAmbition] = useState('Staff Distributed Systems Engineer');
-  const [passkey, setPasskey] = useState('••••••••••••••••••••');
-  const [showPass, setShowPass] = useState(false);
-  const [rememberDevice, setRememberDevice] = useState(true);
+  const { startNewGoal, loadSeedDemo, isLoading, setCurrentView } = useApp();
+  const [targetAmbition, setTargetAmbition] = useState('Full-Stack Web Developer');
 
   const presets = [
-    { title: 'Distributed Systems', role: 'Staff Distributed Systems Engineer' },
-    { title: 'Applied AI & ML', role: 'Applied Machine Learning & Data Systems Engineer' },
-    { title: 'Cloud Infrastructure', role: 'Senior SRE / Kubernetes Platform Engineer' },
-    { title: 'Full-Stack Engine', role: 'Production-Grade Full-Stack Software Engineer' },
+    { title: 'Full-Stack Web Dev', role: 'Full-Stack Software Engineer', icon: 'code', time: '12 WEEKS // 1.5 HRS/DAY' },
+    { title: 'Cloud & DevOps', role: 'Cloud Platform & Infrastructure Engineer', icon: 'cloud', time: '14 WEEKS // 2 HRS/DAY' },
+    { title: 'Machine Learning', role: 'Applied Machine Learning Engineer', icon: 'psychology', time: '16 WEEKS // 2 HRS/DAY' },
+    { title: 'Mobile Engineering', role: 'Cross-Platform Mobile Engineer', icon: 'smartphone', time: '10 WEEKS // 1 HR/DAY' },
   ];
 
-  const handleAuthSubmit = async (e: React.FormEvent) => {
+  const handleStart = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (activeTab === 'signin') {
-      loadSeedDemo();
-    } else {
-      await startNewGoal(targetAmbition);
-    }
+    if (!targetAmbition.trim()) return;
+    await startNewGoal(targetAmbition);
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] w-full flex items-center justify-center p-gutter animate-fadeIn">
-      <div className="flex flex-col w-full max-w-4xl mx-auto my-auto items-center justify-center relative">
-        {/* Floating Top Badge */}
-        <div className="absolute -top-12 -left-4 hidden lg:flex items-center gap-2 px-3 py-1 bg-surface-container-lowest border-[3px] border-black shadow-[4px_4px_0px_#000000]">
-          <span className="w-2.5 h-2.5 bg-tertiary-container border border-black animate-pulse"></span>
-          <span className="font-label-mono text-label-mono uppercase tracking-wider text-on-surface font-bold">
-            GEMMA 4 RUNTIME // HACKTOBERFEST PWA EDITION
-          </span>
-        </div>
+    <div className="flex flex-col w-full pb-space-xl animate-fadeIn max-w-6xl mx-auto">
+      {/* Hero Headline Unit */}
+      <section className="bg-surface-container-lowest border-[3px] border-black shadow-[8px_8px_0px_#000000] p-space-lg lg:p-space-xl mb-space-xl relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(#000000 1.5px, transparent 1.5px)',
+            backgroundSize: '16px 16px',
+          }}
+        />
 
-        {/* Floating Bottom Badge */}
-        <div className="absolute -bottom-8 -right-4 hidden lg:flex items-center gap-2 px-3 py-1 bg-primary-container border-[3px] border-black shadow-[4px_4px_0px_#000000]">
-          <span className="font-label-mono text-label-mono uppercase text-on-primary-container font-bold">
-            UPSHIFT AI // MOBILE-FIRST PWA
-          </span>
-        </div>
-
-        {/* Main Terminal Window */}
-        <div className="w-full bg-surface-container-lowest border-[3px] border-black shadow-[10px_10px_0px_#000000] relative">
-          {/* Black Terminal Title Bar */}
-          <div className="bg-black text-white px-space-md py-space-sm flex flex-wrap items-center justify-between border-b-[3px] border-black">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary-container text-xl">
-                terminal
-              </span>
-              <span className="font-title text-title uppercase tracking-wider font-bold">
-                UPSHIFT AI // LEARNING TERMINAL
-              </span>
-            </div>
-            <div className="flex items-center gap-2 mt-1 sm:mt-0">
-              <span className="bg-secondary-container text-on-secondary-container px-2 py-0.5 font-label-mono text-label-mono font-bold border border-black">
-                POWERED BY GEMMA 4
-              </span>
-              <span className="bg-tertiary-container text-on-tertiary-container px-2 py-0.5 font-label-mono text-label-mono font-bold border border-black flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-black"></span>
-                ADAPTIVE ENGINE: ACTIVE
-              </span>
-            </div>
+        <div className="relative z-10 flex flex-col gap-space-md">
+          <div className="flex flex-wrap items-center gap-space-xs">
+            <span className="px-space-sm py-0.5 bg-primary-container text-on-primary-container font-label-mono text-label-mono uppercase font-bold border-[2px] border-black">
+              UPSHIFT AI // PERSONAL GROWTH OPERATING SYSTEM
+            </span>
+            <span className="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase font-bold border-[2px] border-black">
+              EVIDENCE-DRIVEN &bull; ADAPTIVE &bull; PREREQUISITE-AWARE
+            </span>
           </div>
 
-          <div className="p-space-md sm:p-space-lg flex flex-col gap-6">
-            {/* Header Description & Tab Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-[3px] border-black pb-space-md">
+          <h1 className="font-headline-lg text-headline-lg lg:font-display lg:text-display uppercase tracking-tight text-on-surface font-black m-0 leading-tight">
+            TURN AMBITION INTO A MEASURABLE, ADAPTIVE GROWTH STRATEGY.
+          </h1>
+
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed m-0 font-medium">
+            Understand your true baseline, discover critical prerequisite gaps before they block your progress, and follow an AI-crafted growth roadmap that recalibrates whenever you submit real evidence of learning.
+          </p>
+
+          {/* Quick Start Form */}
+          <form onSubmit={handleStart} className="mt-space-sm flex flex-col sm:flex-row items-stretch gap-space-sm max-w-3xl">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={targetAmbition}
+                onChange={(e) => setTargetAmbition(e.target.value)}
+                placeholder="What skill or role do you want to master? (e.g. Full-Stack Web Developer)"
+                className="w-full bg-surface-container-lowest border-[3px] border-black p-space-md font-label-code text-label-code text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:shadow-[4px_4px_0px_#60a5fa] transition-shadow"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-space-xl py-space-md bg-primary-container hover:bg-primary hover:text-on-primary text-on-primary-container font-title text-title uppercase font-black border-[3px] border-black shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all whitespace-nowrap shrink-0"
+            >
+              {isLoading ? 'CALIBRATING...' : 'BUILD MY GROWTH ROADMAP ?'}
+            </button>
+          </form>
+
+          {/* Alternative Demo Launcher */}
+          <div className="flex flex-wrap items-center gap-space-md pt-space-xs text-on-surface-variant font-label-mono text-label-mono">
+            <span>OR EXPLORE PRE-CONFIGURED JOURNEY:</span>
+            <button
+              type="button"
+              onClick={loadSeedDemo}
+              className="underline font-bold text-primary uppercase hover:text-primary-container transition-colors"
+            >
+              [LOAD FULL-STACK STUDENT DEMO]
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Core 5-Stage Journey Explanation */}
+      <section className="mb-space-xl">
+        <div className="flex items-center gap-space-xs mb-space-md">
+          <span className="w-3.5 h-3.5 bg-primary border-[2px] border-black"></span>
+          <h2 className="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface font-black m-0">
+            THE 5-STAGE GROWTH LOOP: HOW UPSHIFT AI WORKS
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-space-md">
+          {[
+            { step: '01', title: 'ASSESS', desc: 'Define your target skill, current level, weekly hours, and real constraints.' },
+            { step: '02', title: 'DIAGNOSE', desc: 'Identify foundational strengths, critical prerequisite gaps, and uncertainties.' },
+            { step: '03', title: 'PLAN', desc: 'Receive an ordered roadmap with clear dependencies, time estimates, and rubrics.' },
+            { step: '04', title: 'EXECUTE', desc: 'Complete daily actionable deliverables using the focus timer and rubric submission.' },
+            { step: '05', title: 'ADAPT', desc: 'The AI recalculates your pace, unlocks dependencies, and adjusts milestones based on proof.' },
+          ].map((s) => (
+            <div
+              key={s.step}
+              className="bg-surface-container-lowest border-[3px] border-black p-space-md shadow-[4px_4px_0px_#000000] flex flex-col justify-between"
+            >
               <div>
-                <h1 className="font-headline-md text-headline-md uppercase text-on-surface tracking-tight font-extrabold m-0">
-                  TURN YOUR AMBITION INTO MEASURABLE PROGRESS
-                </h1>
-                <p className="font-label-code text-label-code text-on-surface-variant uppercase mt-1 m-0">
-                  Understand where you stand, discover what to improve, and follow an adaptive roadmap built around your goals.
+                <span className="font-label-mono text-label-mono font-bold text-primary block mb-space-xs">
+                  STAGE // {s.step}
+                </span>
+                <h3 className="font-title text-title uppercase font-black text-on-surface mb-space-xs">
+                  {s.title}
+                </h3>
+                <p className="font-body-md text-body-md text-on-surface-variant m-0 leading-snug">
+                  {s.desc}
                 </p>
               </div>
-
-              {/* Mode Tabs */}
-              <div className="inline-flex bg-surface-container-high p-1 border-[3px] border-black shadow-[4px_4px_0px_#000000] self-start sm:self-auto shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('signin')}
-                  className={`px-4 py-2 font-label-mono text-label-mono uppercase font-bold tracking-wider transition-all ${
-                    activeTab === 'signin'
-                      ? 'bg-primary-container text-on-primary-container border-[2px] border-black shadow-[2px_2px_0px_#000000]'
-                      : 'bg-transparent text-on-surface border-[2px] border-transparent hover:border-black'
-                  }`}
-                >
-                  [RESUME ROADMAP]
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('signup')}
-                  className={`px-4 py-2 font-label-mono text-label-mono uppercase font-bold tracking-wider transition-all ${
-                    activeTab === 'signup'
-                      ? 'bg-primary-container text-on-primary-container border-[2px] border-black shadow-[2px_2px_0px_#000000]'
-                      : 'bg-transparent text-on-surface border-[2px] border-transparent hover:border-black'
-                  }`}
-                >
-                  [START MY ASSESSMENT]
-                </button>
-              </div>
             </div>
-
-            {/* Presets Row */}
-            <div className="flex flex-col gap-1">
-              <span className="font-label-mono text-[11px] text-on-surface-variant uppercase font-bold">
-                QUICK CALIBRATION PRESETS // SELECT TO INITIALIZE:
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {presets.map((preset) => (
-                  <button
-                    key={preset.title}
-                    type="button"
-                    onClick={() => {
-                      setTargetAmbition(preset.role);
-                      setActiveTab('signup');
-                    }}
-                    className="px-space-sm py-1 bg-surface-container-low hover:bg-surface-container border-[2px] border-black font-label-mono text-[11px] uppercase font-bold shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px]"
-                  >
-                    + {preset.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleAuthSubmit} className="flex flex-col gap-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Field 1: Learner ID */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <label className="font-label-mono text-label-mono font-bold uppercase text-on-surface flex items-center gap-1.5">
-                      <span className="w-2 h-2 bg-primary"></span>
-                      LEARNER ID // EMAIL
-                    </label>
-                    <span className="font-label-mono text-body-sm text-outline font-bold">
-                      REQ_FIELD
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <input
-                      value={learnerId}
-                      onChange={(e) => setLearnerId(e.target.value)}
-                      className="w-full bg-surface-container-lowest border-[3px] border-black p-3 font-label-code text-label-code text-on-surface placeholder:text-outline-variant focus:outline-none focus:shadow-[4px_4px_0px_#60a5fa] transition-all"
-                      placeholder="learner@domain.edu"
-                      required
-                      type="text"
-                    />
-                    <span className="absolute right-3 top-3.5 material-symbols-outlined text-outline text-lg">
-                      school
-                    </span>
-                  </div>
-                </div>
-
-                {/* Field 2: Target Ambition */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <label className="font-label-mono text-label-mono font-bold uppercase text-on-surface flex items-center gap-1.5">
-                      <span className="w-2 h-2 bg-primary"></span>
-                      PRIMARY AMBITION // TARGET ROLE
-                    </label>
-                    <span className="font-label-mono text-body-sm text-outline font-bold">
-                      ROADMAP_TARGET
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <input
-                      value={targetAmbition}
-                      onChange={(e) => setTargetAmbition(e.target.value)}
-                      className="w-full bg-surface-container-lowest border-[3px] border-black p-3 font-label-code text-label-code text-on-surface placeholder:text-outline-variant focus:outline-none focus:shadow-[4px_4px_0px_#60a5fa] transition-all"
-                      placeholder="e.g. Distributed Systems Engineer / AI Researcher"
-                      required
-                      type="text"
-                    />
-                    <span className="absolute right-3 top-3.5 material-symbols-outlined text-outline text-lg">
-                      rocket_launch
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Passkey */}
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <label className="font-label-mono text-label-mono font-bold uppercase text-on-surface flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-primary"></span>
-                    SECURITY PASSKEY
-                  </label>
-                  <a
-                    href="#recover"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      loadSeedDemo();
-                    }}
-                    className="font-label-mono text-body-sm text-primary uppercase underline font-bold hover:text-on-surface"
-                  >
-                    Use Demo Passkey?
-                  </a>
-                </div>
-                <div className="relative">
-                  <input
-                    value={passkey}
-                    onChange={(e) => setPasskey(e.target.value)}
-                    className="w-full bg-surface-container-lowest border-[3px] border-black p-3 font-label-code text-label-code text-on-surface placeholder:text-outline-variant focus:outline-none focus:shadow-[4px_4px_0px_#60a5fa] transition-all pr-12"
-                    placeholder="••••••••••••••••••••"
-                    required
-                    type={showPass ? 'text' : 'password'}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3 top-2.5 p-1 hover:bg-surface-container-highest transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-on-surface text-xl">
-                      {showPass ? 'visibility_off' : 'visibility'}
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Extra Box for Sign Up */}
-              {activeTab === 'signup' && (
-                <div className="flex flex-col gap-2 bg-surface-container-low p-3 border-[2px] border-black">
-                  <div className="flex justify-between items-center">
-                    <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
-                      CLUSTER PERMISSION MATRIX
-                    </span>
-                    <span className="font-label-mono text-body-sm bg-primary-fixed text-on-primary-fixed px-1 border border-black font-bold">
-                      READ_WRITE_EXEC
-                    </span>
-                  </div>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant m-0">
-                    Default tenant role assigned:{' '}
-                    <code className="font-label-code font-bold text-on-surface bg-surface-container-highest px-1 border border-black">
-                      OPS_INFRA_ENGINEER_L2
-                    </code>
-                  </p>
-                </div>
-              )}
-
-              {/* Options & Action Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                <label className="flex items-start gap-3 cursor-pointer select-none bg-surface-container-low p-3 border-[2px] border-black hover:bg-surface-container transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={rememberDevice}
-                    onChange={(e) => setRememberDevice(e.target.checked)}
-                    className="mt-0.5 accent-primary h-4 w-4 border-2 border-black rounded-none"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-label-mono text-label-mono uppercase font-bold text-on-surface">
-                      TRUST CURRENT BROWSER ENGINE
-                    </span>
-                    <span className="font-body-sm text-body-sm text-on-surface-variant">
-                      Persist offline state in Service Worker cache and IndexedDB.
-                    </span>
-                  </div>
-                </label>
-
-                <div className="flex items-center justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={loadSeedDemo}
-                    className="w-full md:w-auto px-4 py-3 bg-surface-container-high hover:bg-surface-container border-[3px] border-black font-title text-title uppercase tracking-wider text-on-surface shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all font-bold"
-                  >
-                    [DEMO ACCESS]
-                  </button>
-
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full md:w-auto px-6 py-3 bg-primary-container hover:bg-primary-fixed border-[3px] border-black font-title text-title uppercase tracking-wider text-on-primary-container shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-2 font-bold"
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      login
-                    </span>
-                    <span>
-                      {isLoading
-                        ? 'COMPUTING...'
-                        : activeTab === 'signin'
-                        ? 'RESUME ROADMAP'
-                        : 'START ASSESSMENT'}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* Recommended Learning Ambitions Grid */}
+      <section className="mb-space-xl">
+        <div className="flex items-center justify-between gap-space-sm mb-space-md">
+          <div className="flex items-center gap-space-xs">
+            <span className="w-3.5 h-3.5 bg-secondary border-[2px] border-black"></span>
+            <h2 className="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface font-black m-0">
+              POPULAR LEARNER TRAJECTORIES
+            </h2>
+          </div>
+          <span className="font-label-mono text-label-mono uppercase text-on-surface-variant font-bold">
+            CLICK TO INITIALIZE
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+          {presets.map((p) => (
+            <div
+              key={p.title}
+              onClick={() => {
+                setTargetAmbition(p.role);
+                startNewGoal(p.role);
+              }}
+              className="bg-surface-container-lowest hover:bg-surface-container border-[3px] border-black p-space-md shadow-[4px_4px_0px_#000000] hover:shadow-[2px_2px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-space-sm">
+                  <span className="material-symbols-outlined text-[28px] text-primary">{p.icon}</span>
+                  <span className="font-label-mono text-[10px] uppercase px-1.5 py-0.5 bg-surface-container-high border border-black font-bold">
+                    RECOMMENDED
+                  </span>
+                </div>
+                <h3 className="font-title text-title uppercase font-black text-on-surface mb-space-xs">
+                  {p.title}
+                </h3>
+                <p className="font-label-mono text-[11px] text-on-surface-variant font-bold uppercase">
+                  {p.time}
+                </p>
+              </div>
+              <div className="pt-space-sm mt-space-sm border-t-[2px] border-black flex items-center justify-between text-primary font-title text-sm font-bold uppercase">
+                <span>START PATH</span>
+                <span>?</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

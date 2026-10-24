@@ -318,7 +318,7 @@ export const SystemDetailsView: React.FC = () => {
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className="bg-surface-container-lowest text-on-surface font-label-code text-label-code p-space-sm border-[2px] border-[#000000] focus:outline-none focus:shadow-[3px_3px_0px_#000000] transition-all"
-                    placeholder="e.g. Staff Distributed Systems Engineer"
+                    placeholder="e.g. Full-Stack Web Developer"
                     required
                     type="text"
                   />

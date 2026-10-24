@@ -23,7 +23,7 @@ export const DailyTaskWorkspace: React.FC = () => {
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
   const [submissionText, setSubmissionText] = useState<string>(
     currentTask?.userSubmission ||
-      `// Empirical Deliverable Submission for Task: ${currentTask?.title || 'Benchmark'}\n// Verify your code satisfies all prerequisite constraints.\n\nfunction runBenchmark() {\n  console.log("Initializing vector retrieval benchmark...");\n  const start = performance.now();\n  // Your benchmark verification logic here\n  return { latencyMs: 8.4, recallRate: 0.984 };\n}\n\nrunBenchmark();`
+      `// Deliverable Submission for Task: ${currentTask?.title || 'Implementation'}\n// Objective: ${currentTask?.objective || 'Satisfy all completion criteria'}\n\nfunction executeSolution() {\n  console.log("Executing deliverable verification...");\n  // Write or paste your deliverable solution here\n  return { status: "completed", verified: true };\n}\n\nexecuteSolution();`
   );
   const [submissionType, setSubmissionType] = useState<'code' | 'url' | 'notes'>('code');
   const [evaluationResult, setEvaluationResult] = useState<TaskEvaluationResult | null>(null);

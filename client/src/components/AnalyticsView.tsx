@@ -53,7 +53,7 @@ export const AnalyticsView: React.FC = () => {
                 ADAPTIVE EVIDENCE STREAM // REALTIME
               </span>
               <span className="px-space-sm py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono uppercase border-[2px] border-[#000000] font-bold">
-                TARGET: {(goalContext?.targetSkill || goalContext?.clarifiedGoal || 'DISTRIBUTED SYSTEMS').toUpperCase()}
+                TARGET: {(goalContext?.targetSkill || goalContext?.clarifiedGoal || 'FULL-STACK SOFTWARE ENGINEERING').toUpperCase()}
               </span>
               <span className="px-space-sm py-0.5 bg-surface-container-high text-on-surface font-label-mono text-label-mono uppercase border-[2px] border-[#000000]">
                 LEARNER ID: USR_0X889F
@@ -555,7 +555,7 @@ export const AnalyticsView: React.FC = () => {
                     25%
                   </div>
                   <span className="font-label-mono text-[10px] text-on-surface-variant uppercase">
-                    DISTRIBUTED SYSTEMS
+                    SYSTEM ARCHITECTURE
                   </span>
                 </div>
 
